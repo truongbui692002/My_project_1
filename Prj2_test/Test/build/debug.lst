@@ -1,0 +1,357 @@
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccvJFYTj.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"debug.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.Debug_Init,"ax",%progbits
+  18              		.align	1
+  19              		.global	Debug_Init
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	Debug_Init:
+  25              	.LFB68:
+  26              		.file 1 "Core/Src/debug.c"
+   1:Core/Src/debug.c **** #include "debug.h"
+   2:Core/Src/debug.c **** #include "stdio.h"
+   3:Core/Src/debug.c **** #include "stdbool.h"
+   4:Core/Src/debug.c **** #include <errno.h>
+   5:Core/Src/debug.c **** #include <sys/unistd.h>
+   6:Core/Src/debug.c **** #include <stdarg.h>
+   7:Core/Src/debug.c **** #include <string.h>
+   8:Core/Src/debug.c **** 
+   9:Core/Src/debug.c **** static uint8_t rx_debug = 0;
+  10:Core/Src/debug.c **** bool isNaize = false;
+  11:Core/Src/debug.c **** 
+  12:Core/Src/debug.c **** void Debug_Init(void)
+  13:Core/Src/debug.c **** {
+  27              		.loc 1 13 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 08B5     		push	{r3, lr}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 3, -8
+  35              		.cfi_offset 14, -4
+  14:Core/Src/debug.c ****     HAL_UART_Receive_IT(UART_DEBUG, &rx_debug, 1);
+  36              		.loc 1 14 5 view .LVU1
+  37 0002 0122     		movs	r2, #1
+  38 0004 0249     		ldr	r1, .L3
+  39 0006 0348     		ldr	r0, .L3+4
+  40 0008 FFF7FEFF 		bl	HAL_UART_Receive_IT
+  41              	.LVL0:
+  15:Core/Src/debug.c **** }
+  42              		.loc 1 15 1 is_stmt 0 view .LVU2
+  43 000c 08BD     		pop	{r3, pc}
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccvJFYTj.s 			page 2
+
+
+  44              	.L4:
+  45 000e 00BF     		.align	2
+  46              	.L3:
+  47 0010 00000000 		.word	.LANCHOR0
+  48 0014 00000000 		.word	huart1
+  49              		.cfi_endproc
+  50              	.LFE68:
+  52              		.section	.text.debug_callback,"ax",%progbits
+  53              		.align	1
+  54              		.global	debug_callback
+  55              		.syntax unified
+  56              		.thumb
+  57              		.thumb_func
+  59              	debug_callback:
+  60              	.LFB69:
+  16:Core/Src/debug.c **** 
+  17:Core/Src/debug.c **** void debug_callback(void)
+  18:Core/Src/debug.c **** {
+  61              		.loc 1 18 1 is_stmt 1 view -0
+  62              		.cfi_startproc
+  63              		@ args = 0, pretend = 0, frame = 0
+  64              		@ frame_needed = 0, uses_anonymous_args = 0
+  65 0000 08B5     		push	{r3, lr}
+  66              	.LCFI1:
+  67              		.cfi_def_cfa_offset 8
+  68              		.cfi_offset 3, -8
+  69              		.cfi_offset 14, -4
+  19:Core/Src/debug.c ****     if(rx_debug == '^')
+  70              		.loc 1 19 5 view .LVU4
+  71              		.loc 1 19 17 is_stmt 0 view .LVU5
+  72 0002 0A4B     		ldr	r3, .L11
+  73 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  74              		.loc 1 19 7 view .LVU6
+  75 0006 5E2B     		cmp	r3, #94
+  76 0008 07D0     		beq	.L9
+  20:Core/Src/debug.c ****     {
+  21:Core/Src/debug.c ****         HAL_NVIC_SystemReset();
+  22:Core/Src/debug.c ****     }
+  23:Core/Src/debug.c ****     else if (rx_debug == 'F')
+  77              		.loc 1 23 10 is_stmt 1 view .LVU7
+  78              		.loc 1 23 13 is_stmt 0 view .LVU8
+  79 000a 462B     		cmp	r3, #70
+  80 000c 08D0     		beq	.L10
+  81              	.L7:
+  24:Core/Src/debug.c ****     {
+  25:Core/Src/debug.c ****         isNaize = !isNaize;
+  26:Core/Src/debug.c ****     }
+  27:Core/Src/debug.c ****     HAL_UART_Receive_IT(UART_DEBUG, &rx_debug, 1);
+  82              		.loc 1 27 5 is_stmt 1 view .LVU9
+  83 000e 0122     		movs	r2, #1
+  84 0010 0649     		ldr	r1, .L11
+  85 0012 0748     		ldr	r0, .L11+4
+  86 0014 FFF7FEFF 		bl	HAL_UART_Receive_IT
+  87              	.LVL1:
+  28:Core/Src/debug.c **** }
+  88              		.loc 1 28 1 is_stmt 0 view .LVU10
+  89 0018 08BD     		pop	{r3, pc}
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccvJFYTj.s 			page 3
+
+
+  90              	.L9:
+  21:Core/Src/debug.c ****     }
+  91              		.loc 1 21 9 is_stmt 1 view .LVU11
+  92 001a FFF7FEFF 		bl	HAL_NVIC_SystemReset
+  93              	.LVL2:
+  94 001e F6E7     		b	.L7
+  95              	.L10:
+  25:Core/Src/debug.c ****     }
+  96              		.loc 1 25 9 view .LVU12
+  97 0020 044A     		ldr	r2, .L11+8
+  98 0022 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  99 0024 83F00103 		eor	r3, r3, #1
+  25:Core/Src/debug.c ****     }
+ 100              		.loc 1 25 17 is_stmt 0 view .LVU13
+ 101 0028 1370     		strb	r3, [r2]
+ 102 002a F0E7     		b	.L7
+ 103              	.L12:
+ 104              		.align	2
+ 105              	.L11:
+ 106 002c 00000000 		.word	.LANCHOR0
+ 107 0030 00000000 		.word	huart1
+ 108 0034 00000000 		.word	.LANCHOR1
+ 109              		.cfi_endproc
+ 110              	.LFE69:
+ 112              		.section	.text.vprint,"ax",%progbits
+ 113              		.align	1
+ 114              		.global	vprint
+ 115              		.syntax unified
+ 116              		.thumb
+ 117              		.thumb_func
+ 119              	vprint:
+ 120              	.LVL3:
+ 121              	.LFB70:
+  29:Core/Src/debug.c **** 
+  30:Core/Src/debug.c **** #if DEBUG ==1
+  31:Core/Src/debug.c **** void vprint(const char *fmt, va_list argp)
+  32:Core/Src/debug.c **** {
+ 122              		.loc 1 32 1 is_stmt 1 view -0
+ 123              		.cfi_startproc
+ 124              		@ args = 0, pretend = 0, frame = 200
+ 125              		@ frame_needed = 0, uses_anonymous_args = 0
+ 126              		.loc 1 32 1 is_stmt 0 view .LVU15
+ 127 0000 00B5     		push	{lr}
+ 128              	.LCFI2:
+ 129              		.cfi_def_cfa_offset 4
+ 130              		.cfi_offset 14, -4
+ 131 0002 B3B0     		sub	sp, sp, #204
+ 132              	.LCFI3:
+ 133              		.cfi_def_cfa_offset 208
+ 134 0004 0A46     		mov	r2, r1
+  33:Core/Src/debug.c ****     char string[200];
+ 135              		.loc 1 33 5 is_stmt 1 view .LVU16
+  34:Core/Src/debug.c ****     if(0 < vsprintf(string, fmt, argp)) // build string
+ 136              		.loc 1 34 5 view .LVU17
+ 137              		.loc 1 34 12 is_stmt 0 view .LVU18
+ 138 0006 0146     		mov	r1, r0
+ 139              	.LVL4:
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccvJFYTj.s 			page 4
+
+
+ 140              		.loc 1 34 12 view .LVU19
+ 141 0008 6846     		mov	r0, sp
+ 142              	.LVL5:
+ 143              		.loc 1 34 12 view .LVU20
+ 144 000a FFF7FEFF 		bl	vsprintf
+ 145              	.LVL6:
+ 146              		.loc 1 34 7 view .LVU21
+ 147 000e 0028     		cmp	r0, #0
+ 148 0010 02DC     		bgt	.L16
+ 149              	.L13:
+  35:Core/Src/debug.c ****     {
+  36:Core/Src/debug.c ****         HAL_UART_Transmit(UART_DEBUG, (uint8_t*)string, strlen(string), 100); // send message via U
+  37:Core/Src/debug.c ****     }
+  38:Core/Src/debug.c **** }
+ 150              		.loc 1 38 1 view .LVU22
+ 151 0012 33B0     		add	sp, sp, #204
+ 152              	.LCFI4:
+ 153              		.cfi_remember_state
+ 154              		.cfi_def_cfa_offset 4
+ 155              		@ sp needed
+ 156 0014 5DF804FB 		ldr	pc, [sp], #4
+ 157              	.L16:
+ 158              	.LCFI5:
+ 159              		.cfi_restore_state
+  36:Core/Src/debug.c ****     }
+ 160              		.loc 1 36 9 is_stmt 1 view .LVU23
+  36:Core/Src/debug.c ****     }
+ 161              		.loc 1 36 57 is_stmt 0 view .LVU24
+ 162 0018 6846     		mov	r0, sp
+ 163 001a FFF7FEFF 		bl	strlen
+ 164              	.LVL7:
+  36:Core/Src/debug.c ****     }
+ 165              		.loc 1 36 9 view .LVU25
+ 166 001e 6423     		movs	r3, #100
+ 167 0020 82B2     		uxth	r2, r0
+ 168 0022 6946     		mov	r1, sp
+ 169 0024 0148     		ldr	r0, .L17
+ 170 0026 FFF7FEFF 		bl	HAL_UART_Transmit
+ 171              	.LVL8:
+ 172              		.loc 1 38 1 view .LVU26
+ 173 002a F2E7     		b	.L13
+ 174              	.L18:
+ 175              		.align	2
+ 176              	.L17:
+ 177 002c 00000000 		.word	huart1
+ 178              		.cfi_endproc
+ 179              	.LFE70:
+ 181              		.section	.text.logPC,"ax",%progbits
+ 182              		.align	1
+ 183              		.global	logPC
+ 184              		.syntax unified
+ 185              		.thumb
+ 186              		.thumb_func
+ 188              	logPC:
+ 189              	.LVL9:
+ 190              	.LFB71:
+  39:Core/Src/debug.c **** 
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccvJFYTj.s 			page 5
+
+
+  40:Core/Src/debug.c **** /**
+  41:Core/Src/debug.c ****     * @brief custom printf() function
+  42:Core/Src/debug.c ****     * 
+  43:Core/Src/debug.c ****     * @param fmt
+  44:Core/Src/debug.c ****     * @param ...
+  45:Core/Src/debug.c **** */
+  46:Core/Src/debug.c **** void logPC(const char *fmt, ...)
+  47:Core/Src/debug.c **** {
+ 191              		.loc 1 47 1 is_stmt 1 view -0
+ 192              		.cfi_startproc
+ 193              		@ args = 4, pretend = 16, frame = 8
+ 194              		@ frame_needed = 0, uses_anonymous_args = 1
+ 195              		.loc 1 47 1 is_stmt 0 view .LVU28
+ 196 0000 0FB4     		push	{r0, r1, r2, r3}
+ 197              	.LCFI6:
+ 198              		.cfi_def_cfa_offset 16
+ 199              		.cfi_offset 0, -16
+ 200              		.cfi_offset 1, -12
+ 201              		.cfi_offset 2, -8
+ 202              		.cfi_offset 3, -4
+ 203 0002 00B5     		push	{lr}
+ 204              	.LCFI7:
+ 205              		.cfi_def_cfa_offset 20
+ 206              		.cfi_offset 14, -20
+ 207 0004 83B0     		sub	sp, sp, #12
+ 208              	.LCFI8:
+ 209              		.cfi_def_cfa_offset 32
+ 210 0006 04A9     		add	r1, sp, #16
+ 211 0008 51F8040B 		ldr	r0, [r1], #4
+  48:Core/Src/debug.c ****     va_list argp;
+ 212              		.loc 1 48 5 is_stmt 1 view .LVU29
+  49:Core/Src/debug.c ****     va_start(argp, fmt);
+ 213              		.loc 1 49 5 view .LVU30
+ 214 000c 0191     		str	r1, [sp, #4]
+  50:Core/Src/debug.c ****     vprint(fmt, argp);
+ 215              		.loc 1 50 5 view .LVU31
+ 216 000e FFF7FEFF 		bl	vprint
+ 217              	.LVL10:
+  51:Core/Src/debug.c ****     va_end(argp);
+ 218              		.loc 1 51 5 view .LVU32
+  52:Core/Src/debug.c **** }
+ 219              		.loc 1 52 1 is_stmt 0 view .LVU33
+ 220 0012 03B0     		add	sp, sp, #12
+ 221              	.LCFI9:
+ 222              		.cfi_def_cfa_offset 20
+ 223              		@ sp needed
+ 224 0014 5DF804EB 		ldr	lr, [sp], #4
+ 225              	.LCFI10:
+ 226              		.cfi_restore 14
+ 227              		.cfi_def_cfa_offset 16
+ 228 0018 04B0     		add	sp, sp, #16
+ 229              	.LCFI11:
+ 230              		.cfi_restore 3
+ 231              		.cfi_restore 2
+ 232              		.cfi_restore 1
+ 233              		.cfi_restore 0
+ 234              		.cfi_def_cfa_offset 0
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccvJFYTj.s 			page 6
+
+
+ 235 001a 7047     		bx	lr
+ 236              		.cfi_endproc
+ 237              	.LFE71:
+ 239              		.global	isNaize
+ 240              		.section	.bss.isNaize,"aw",%nobits
+ 241              		.set	.LANCHOR1,. + 0
+ 244              	isNaize:
+ 245 0000 00       		.space	1
+ 246              		.section	.bss.rx_debug,"aw",%nobits
+ 247              		.set	.LANCHOR0,. + 0
+ 250              	rx_debug:
+ 251 0000 00       		.space	1
+ 252              		.text
+ 253              	.Letext0:
+ 254              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 255              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 256              		.file 4 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h"
+ 257              		.file 5 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 258              		.file 6 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h"
+ 259              		.file 7 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h"
+ 260              		.file 8 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\lib\\gcc\\arm-none-eabi\
+ 261              		.file 9 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 262              		.file 10 "Core/Inc/usart.h"
+ 263              		.file 11 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\
+ 264              		.file 12 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_cortex.h"
+ 265              		.file 13 "<built-in>"
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccvJFYTj.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 debug.c
+C:\Users\ADMINI~1\AppData\Local\Temp\ccvJFYTj.s:18     .text.Debug_Init:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\ccvJFYTj.s:24     .text.Debug_Init:00000000 Debug_Init
+C:\Users\ADMINI~1\AppData\Local\Temp\ccvJFYTj.s:47     .text.Debug_Init:00000010 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccvJFYTj.s:53     .text.debug_callback:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\ccvJFYTj.s:59     .text.debug_callback:00000000 debug_callback
+C:\Users\ADMINI~1\AppData\Local\Temp\ccvJFYTj.s:106    .text.debug_callback:0000002c $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccvJFYTj.s:113    .text.vprint:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\ccvJFYTj.s:119    .text.vprint:00000000 vprint
+C:\Users\ADMINI~1\AppData\Local\Temp\ccvJFYTj.s:177    .text.vprint:0000002c $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccvJFYTj.s:182    .text.logPC:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\ccvJFYTj.s:188    .text.logPC:00000000 logPC
+C:\Users\ADMINI~1\AppData\Local\Temp\ccvJFYTj.s:244    .bss.isNaize:00000000 isNaize
+C:\Users\ADMINI~1\AppData\Local\Temp\ccvJFYTj.s:245    .bss.isNaize:00000000 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccvJFYTj.s:250    .bss.rx_debug:00000000 rx_debug
+C:\Users\ADMINI~1\AppData\Local\Temp\ccvJFYTj.s:251    .bss.rx_debug:00000000 $d
+
+UNDEFINED SYMBOLS
+HAL_UART_Receive_IT
+huart1
+HAL_NVIC_SystemReset
+vsprintf
+strlen
+HAL_UART_Transmit

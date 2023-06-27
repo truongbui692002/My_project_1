@@ -1,0 +1,2054 @@
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"max30102.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.max30102_getUnreadSampleCount,"ax",%progbits
+  18              		.align	1
+  19              		.global	max30102_getUnreadSampleCount
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	max30102_getUnreadSampleCount:
+  25              	.LFB66:
+  26              		.file 1 "Core/Src/max30102.c"
+   1:Core/Src/max30102.c **** #include "stm32f1xx_hal.h"
+   2:Core/Src/max30102.c **** #include "max30102.h"
+   3:Core/Src/max30102.c **** 
+   4:Core/Src/max30102.c **** #define MAX30102_ADDR_WRITE 0xae
+   5:Core/Src/max30102.c **** #define MAX30102_ADDR_READ 0xaf
+   6:Core/Src/max30102.c **** 
+   7:Core/Src/max30102.c **** #define RES_INTERRUPT_STATUS_1 0x00
+   8:Core/Src/max30102.c **** #define RES_INTERRUPT_STATUS_2 0x01
+   9:Core/Src/max30102.c **** #define RES_INTERRUPT_ENABLE_1 0x02
+  10:Core/Src/max30102.c **** #define RES_INTERRUPT_ENABLE_2 0x03
+  11:Core/Src/max30102.c **** #define RES_FIFO_WRITE_POINTER 0x04
+  12:Core/Src/max30102.c **** #define RES_OVERFLOW_COUNTER 0x05
+  13:Core/Src/max30102.c **** #define RES_FIFO_READ_POINTER 0x06
+  14:Core/Src/max30102.c **** #define RES_FIFO_DATA_REGISTER 0x07
+  15:Core/Src/max30102.c **** #define RES_FIFO_CONFIGURATION 0x08
+  16:Core/Src/max30102.c **** #define RES_MODE_CONFIGURATION 0x09
+  17:Core/Src/max30102.c **** #define RES_SPO2_CONFIGURATION 0x0a
+  18:Core/Src/max30102.c **** #define RES_LED_PLUSE_AMPLITUDE_1 0x0c
+  19:Core/Src/max30102.c **** #define RES_LED_PLUSE_AMPLITUDE_2 0x0d
+  20:Core/Src/max30102.c **** #define RES_PROXIMITY_MODE_LED_PLUSE_AMPLITUDE 0x10
+  21:Core/Src/max30102.c **** #define RES_MULTI_LED_MODE_CONTROL_1 0x11
+  22:Core/Src/max30102.c **** #define RES_MULTI_LED_MODE_CONTROL_2 0x12
+  23:Core/Src/max30102.c **** #define RES_DIE_TEMP_INTEGER 0x1f
+  24:Core/Src/max30102.c **** #define RES_DIE_TEMP_FRACTION 0x20
+  25:Core/Src/max30102.c **** #define RES_DIE_TEMPERATURE_CONFIG 0x21
+  26:Core/Src/max30102.c **** #define RES_PROXIMITY_INTERRUPT_THRESHOLD 0x30
+  27:Core/Src/max30102.c **** #define RES_REVISION_ID 0xfe
+  28:Core/Src/max30102.c **** #define RES_PART_ID 0xff
+  29:Core/Src/max30102.c **** 
+  30:Core/Src/max30102.c **** extern I2C_HandleTypeDef hi2c2;
+  31:Core/Src/max30102.c **** 
+  32:Core/Src/max30102.c **** void max30102_init()
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 2
+
+
+  33:Core/Src/max30102.c **** {
+  34:Core/Src/max30102.c ****     uint8_t data = 0;
+  35:Core/Src/max30102.c ****     /*reset*/
+  36:Core/Src/max30102.c ****     data = 0x40;
+  37:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_MODE_CONFIGURATION, I2C_MEMADD_SIZE_8BIT, &d
+  38:Core/Src/max30102.c ****     do
+  39:Core/Src/max30102.c ****     {
+  40:Core/Src/max30102.c ****         HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADDR_READ, RES_MODE_CONFIGURATION, I2C_MEMADD_SIZE_8BIT, 
+  41:Core/Src/max30102.c ****     } while (data & 0x40);
+  42:Core/Src/max30102.c ****     /*新数据中断*/
+  43:Core/Src/max30102.c ****     data = 0x40;
+  44:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_INTERRUPT_ENABLE_1, I2C_MEMADD_SIZE_8BIT, &d
+  45:Core/Src/max30102.c ****     //    /* 温度转换完中断*/
+  46:Core/Src/max30102.c ****     //    data = 0x02;
+  47:Core/Src/max30102.c ****     //    HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_INTERRUPT_ENABLE_2, I2C_MEMADD_SIZE_8B
+  48:Core/Src/max30102.c ****     //    /*25个采样未读中断*/
+  49:Core/Src/max30102.c ****     //    data = 0x7;
+  50:Core/Src/max30102.c ****     //    /* 快满中断*/
+  51:Core/Src/max30102.c ****     //    data = 0x80;
+  52:Core/Src/max30102.c ****     //    HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_INTERRUPT_ENABLE_1, I2C_MEMADD_SIZE_8B
+  53:Core/Src/max30102.c ****     //    HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_FIFO_CONFIGURATION, I2C_MEMADD_SIZE_8B
+  54:Core/Src/max30102.c ****     /*16384量程 50Hz 18位adc分辨率*/
+  55:Core/Src/max30102.c ****     data = 0x63;
+  56:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_SPO2_CONFIGURATION, I2C_MEMADD_SIZE_8BIT, &d
+  57:Core/Src/max30102.c ****     /*灯的亮度*/
+  58:Core/Src/max30102.c ****     data = 0x47;
+  59:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_LED_PLUSE_AMPLITUDE_1, I2C_MEMADD_SIZE_8BIT,
+  60:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_LED_PLUSE_AMPLITUDE_2, I2C_MEMADD_SIZE_8BIT,
+  61:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_PROXIMITY_MODE_LED_PLUSE_AMPLITUDE, I2C_MEMA
+  62:Core/Src/max30102.c ****     /*FIFO clear*/
+  63:Core/Src/max30102.c ****     data = 0;
+  64:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_FIFO_WRITE_POINTER, I2C_MEMADD_SIZE_8BIT, &d
+  65:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_OVERFLOW_COUNTER, I2C_MEMADD_SIZE_8BIT, &dat
+  66:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_FIFO_READ_POINTER, I2C_MEMADD_SIZE_8BIT, &da
+  67:Core/Src/max30102.c ****     /*interrupt status clear*/
+  68:Core/Src/max30102.c ****     max30102_getStatus();
+  69:Core/Src/max30102.c ****     // /*转换温度*/
+  70:Core/Src/max30102.c ****     // data = 1;
+  71:Core/Src/max30102.c ****     // HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_DIE_TEMPERATURE_CONFIG, I2C_MEMADD_SIZE_8
+  72:Core/Src/max30102.c ****     /*SPO2 Mode*/
+  73:Core/Src/max30102.c ****     data = 0x03;
+  74:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_MODE_CONFIGURATION, I2C_MEMADD_SIZE_8BIT, &d
+  75:Core/Src/max30102.c **** }
+  76:Core/Src/max30102.c **** 
+  77:Core/Src/max30102.c **** uint8_t max30102_getUnreadSampleCount()
+  78:Core/Src/max30102.c **** {
+  27              		.loc 1 78 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 8
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 70B5     		push	{r4, r5, r6, lr}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 16
+  34              		.cfi_offset 4, -16
+  35              		.cfi_offset 5, -12
+  36              		.cfi_offset 6, -8
+  37              		.cfi_offset 14, -4
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 3
+
+
+  38 0002 86B0     		sub	sp, sp, #24
+  39              	.LCFI1:
+  40              		.cfi_def_cfa_offset 40
+  79:Core/Src/max30102.c ****     uint8_t wr = 0, rd = 0;
+  41              		.loc 1 79 5 view .LVU1
+  42              		.loc 1 79 13 is_stmt 0 view .LVU2
+  43 0004 0023     		movs	r3, #0
+  44 0006 8DF81730 		strb	r3, [sp, #23]
+  45              		.loc 1 79 21 view .LVU3
+  46 000a 8DF81630 		strb	r3, [sp, #22]
+  80:Core/Src/max30102.c ****     HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADDR_READ, RES_FIFO_WRITE_POINTER, I2C_MEMADD_SIZE_8BIT, &wr,
+  47              		.loc 1 80 5 is_stmt 1 view .LVU4
+  48 000e 144D     		ldr	r5, .L6
+  49 0010 0A26     		movs	r6, #10
+  50 0012 0296     		str	r6, [sp, #8]
+  51 0014 0124     		movs	r4, #1
+  52 0016 0194     		str	r4, [sp, #4]
+  53 0018 0DF11703 		add	r3, sp, #23
+  54 001c 0093     		str	r3, [sp]
+  55 001e 2346     		mov	r3, r4
+  56 0020 0422     		movs	r2, #4
+  57 0022 AF21     		movs	r1, #175
+  58 0024 2846     		mov	r0, r5
+  59 0026 FFF7FEFF 		bl	HAL_I2C_Mem_Read
+  60              	.LVL0:
+  81:Core/Src/max30102.c ****     HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADDR_READ, RES_FIFO_READ_POINTER, I2C_MEMADD_SIZE_8BIT, &rd, 
+  61              		.loc 1 81 5 view .LVU5
+  62 002a 0296     		str	r6, [sp, #8]
+  63 002c 0194     		str	r4, [sp, #4]
+  64 002e 0DF11603 		add	r3, sp, #22
+  65 0032 0093     		str	r3, [sp]
+  66 0034 2346     		mov	r3, r4
+  67 0036 0622     		movs	r2, #6
+  68 0038 AF21     		movs	r1, #175
+  69 003a 2846     		mov	r0, r5
+  70 003c FFF7FEFF 		bl	HAL_I2C_Mem_Read
+  71              	.LVL1:
+  82:Core/Src/max30102.c ****     if ((wr - rd) < 0)
+  72              		.loc 1 82 5 view .LVU6
+  73              		.loc 1 82 13 is_stmt 0 view .LVU7
+  74 0040 9DF81700 		ldrb	r0, [sp, #23]	@ zero_extendqisi2
+  75 0044 9DF81630 		ldrb	r3, [sp, #22]	@ zero_extendqisi2
+  76 0048 C21A     		subs	r2, r0, r3
+  77              		.loc 1 82 8 view .LVU8
+  78 004a 002A     		cmp	r2, #0
+  79 004c 03DB     		blt	.L5
+  83:Core/Src/max30102.c ****         return wr - rd + 32;
+  84:Core/Src/max30102.c ****     else
+  85:Core/Src/max30102.c ****         return wr - rd;
+  80              		.loc 1 85 9 is_stmt 1 view .LVU9
+  81              		.loc 1 85 19 is_stmt 0 view .LVU10
+  82 004e C01A     		subs	r0, r0, r3
+  83 0050 C0B2     		uxtb	r0, r0
+  84              	.L3:
+  86:Core/Src/max30102.c **** }
+  85              		.loc 1 86 1 view .LVU11
+  86 0052 06B0     		add	sp, sp, #24
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 4
+
+
+  87              	.LCFI2:
+  88              		.cfi_remember_state
+  89              		.cfi_def_cfa_offset 16
+  90              		@ sp needed
+  91 0054 70BD     		pop	{r4, r5, r6, pc}
+  92              	.L5:
+  93              	.LCFI3:
+  94              		.cfi_restore_state
+  83:Core/Src/max30102.c ****         return wr - rd + 32;
+  95              		.loc 1 83 9 is_stmt 1 view .LVU12
+  83:Core/Src/max30102.c ****         return wr - rd + 32;
+  96              		.loc 1 83 19 is_stmt 0 view .LVU13
+  97 0056 D0B2     		uxtb	r0, r2
+  83:Core/Src/max30102.c ****         return wr - rd + 32;
+  98              		.loc 1 83 24 view .LVU14
+  99 0058 2030     		adds	r0, r0, #32
+ 100 005a C0B2     		uxtb	r0, r0
+ 101 005c F9E7     		b	.L3
+ 102              	.L7:
+ 103 005e 00BF     		.align	2
+ 104              	.L6:
+ 105 0060 00000000 		.word	hi2c2
+ 106              		.cfi_endproc
+ 107              	.LFE66:
+ 109              		.section	.text.max30102_getFIFO,"ax",%progbits
+ 110              		.align	1
+ 111              		.global	max30102_getFIFO
+ 112              		.syntax unified
+ 113              		.thumb
+ 114              		.thumb_func
+ 116              	max30102_getFIFO:
+ 117              	.LVL2:
+ 118              	.LFB67:
+  87:Core/Src/max30102.c **** 
+  88:Core/Src/max30102.c **** void max30102_getFIFO(SAMPLE *data, uint8_t sampleCount)
+  89:Core/Src/max30102.c **** {
+ 119              		.loc 1 89 1 is_stmt 1 view -0
+ 120              		.cfi_startproc
+ 121              		@ args = 0, pretend = 0, frame = 32
+ 122              		@ frame_needed = 0, uses_anonymous_args = 0
+ 123              		.loc 1 89 1 is_stmt 0 view .LVU16
+ 124 0000 30B5     		push	{r4, r5, lr}
+ 125              	.LCFI4:
+ 126              		.cfi_def_cfa_offset 12
+ 127              		.cfi_offset 4, -12
+ 128              		.cfi_offset 5, -8
+ 129              		.cfi_offset 14, -4
+ 130 0002 8DB0     		sub	sp, sp, #52
+ 131              	.LCFI5:
+ 132              		.cfi_def_cfa_offset 64
+ 133 0004 0446     		mov	r4, r0
+ 134 0006 0D46     		mov	r5, r1
+  90:Core/Src/max30102.c ****     uint8_t dataTemp[5 * 6];
+ 135              		.loc 1 90 5 is_stmt 1 view .LVU17
+  91:Core/Src/max30102.c ****     if (sampleCount > 5)
+ 136              		.loc 1 91 5 view .LVU18
+ 137              		.loc 1 91 8 is_stmt 0 view .LVU19
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 5
+
+
+ 138 0008 0529     		cmp	r1, #5
+ 139 000a 00D9     		bls	.L9
+  92:Core/Src/max30102.c ****         sampleCount = 5;
+ 140              		.loc 1 92 21 view .LVU20
+ 141 000c 0525     		movs	r5, #5
+ 142              	.L9:
+ 143              	.LVL3:
+  93:Core/Src/max30102.c ****     HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADDR_READ, RES_FIFO_DATA_REGISTER,
+ 144              		.loc 1 93 5 is_stmt 1 view .LVU21
+ 145 000e 1923     		movs	r3, #25
+ 146 0010 0293     		str	r3, [sp, #8]
+ 147 0012 05EB4503 		add	r3, r5, r5, lsl #1
+ 148 0016 5B00     		lsls	r3, r3, #1
+ 149 0018 9BB2     		uxth	r3, r3
+ 150 001a 0193     		str	r3, [sp, #4]
+ 151 001c 04AB     		add	r3, sp, #16
+ 152 001e 0093     		str	r3, [sp]
+ 153 0020 0123     		movs	r3, #1
+ 154 0022 0722     		movs	r2, #7
+ 155 0024 AF21     		movs	r1, #175
+ 156 0026 1F48     		ldr	r0, .L14
+ 157              	.LVL4:
+ 158              		.loc 1 93 5 is_stmt 0 view .LVU22
+ 159 0028 FFF7FEFF 		bl	HAL_I2C_Mem_Read
+ 160              	.LVL5:
+  94:Core/Src/max30102.c ****                      I2C_MEMADD_SIZE_8BIT, dataTemp,
+  95:Core/Src/max30102.c ****                      6 * sampleCount, 25);
+  96:Core/Src/max30102.c ****     uint8_t i;
+ 161              		.loc 1 96 5 is_stmt 1 view .LVU23
+  97:Core/Src/max30102.c ****     for (i = 0; i < sampleCount; i++)
+ 162              		.loc 1 97 5 view .LVU24
+ 163              		.loc 1 97 12 is_stmt 0 view .LVU25
+ 164 002c 0021     		movs	r1, #0
+ 165              		.loc 1 97 5 view .LVU26
+ 166 002e 34E0     		b	.L10
+ 167              	.LVL6:
+ 168              	.L11:
+  98:Core/Src/max30102.c ****     {
+  99:Core/Src/max30102.c ****         data[i].red = (((uint32_t)dataTemp[i * 6]) << 16 | ((uint32_t)dataTemp[i * 6 + 1]) << 8 | d
+ 169              		.loc 1 99 9 is_stmt 1 discriminator 3 view .LVU27
+ 170              		.loc 1 99 46 is_stmt 0 discriminator 3 view .LVU28
+ 171 0030 01EB4103 		add	r3, r1, r1, lsl #1
+ 172 0034 5A00     		lsls	r2, r3, #1
+ 173              		.loc 1 99 43 discriminator 3 view .LVU29
+ 174 0036 0CA8     		add	r0, sp, #48
+ 175 0038 00EB4303 		add	r3, r0, r3, lsl #1
+ 176 003c 13F820CC 		ldrb	ip, [r3, #-32]	@ zero_extendqisi2
+ 177              		.loc 1 99 79 discriminator 3 view .LVU30
+ 178 0040 02F13103 		add	r3, r2, #49
+ 179 0044 0DEB0300 		add	r0, sp, r3
+ 180 0048 10F8203C 		ldrb	r3, [r0, #-32]	@ zero_extendqisi2
+ 181              		.loc 1 99 92 discriminator 3 view .LVU31
+ 182 004c 1B02     		lsls	r3, r3, #8
+ 183              		.loc 1 99 58 discriminator 3 view .LVU32
+ 184 004e 43EA0C43 		orr	r3, r3, ip, lsl #16
+ 185              		.loc 1 99 107 discriminator 3 view .LVU33
+ 186 0052 02F13200 		add	r0, r2, #50
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 6
+
+
+ 187 0056 6844     		add	r0, sp, r0
+ 188 0058 10F8200C 		ldrb	r0, [r0, #-32]	@ zero_extendqisi2
+ 189              		.loc 1 99 97 discriminator 3 view .LVU34
+ 190 005c 0343     		orrs	r3, r3, r0
+ 191              		.loc 1 99 13 discriminator 3 view .LVU35
+ 192 005e 04EBC100 		add	r0, r4, r1, lsl #3
+ 193              		.loc 1 99 120 discriminator 3 view .LVU36
+ 194 0062 C3F31103 		ubfx	r3, r3, #0, #18
+ 195              		.loc 1 99 21 discriminator 3 view .LVU37
+ 196 0066 44F83130 		str	r3, [r4, r1, lsl #3]
+ 100:Core/Src/max30102.c ****         data[i].iRed = (((uint32_t)dataTemp[i * 6 + 3]) << 16 | ((uint32_t)dataTemp[i * 6 + 4]) << 
+ 197              		.loc 1 100 9 is_stmt 1 discriminator 3 view .LVU38
+ 198              		.loc 1 100 44 is_stmt 0 discriminator 3 view .LVU39
+ 199 006a 02F13303 		add	r3, r2, #51
+ 200 006e 6B44     		add	r3, sp, r3
+ 201 0070 13F820EC 		ldrb	lr, [r3, #-32]	@ zero_extendqisi2
+ 202              		.loc 1 100 84 discriminator 3 view .LVU40
+ 203 0074 02F13403 		add	r3, r2, #52
+ 204 0078 0DEB030C 		add	ip, sp, r3
+ 205 007c 1CF8203C 		ldrb	r3, [ip, #-32]	@ zero_extendqisi2
+ 206              		.loc 1 100 97 discriminator 3 view .LVU41
+ 207 0080 1B02     		lsls	r3, r3, #8
+ 208              		.loc 1 100 63 discriminator 3 view .LVU42
+ 209 0082 43EA0E43 		orr	r3, r3, lr, lsl #16
+ 210              		.loc 1 100 112 discriminator 3 view .LVU43
+ 211 0086 3532     		adds	r2, r2, #53
+ 212 0088 6A44     		add	r2, sp, r2
+ 213 008a 12F8202C 		ldrb	r2, [r2, #-32]	@ zero_extendqisi2
+ 214              		.loc 1 100 102 discriminator 3 view .LVU44
+ 215 008e 1343     		orrs	r3, r3, r2
+ 216              		.loc 1 100 125 discriminator 3 view .LVU45
+ 217 0090 C3F31103 		ubfx	r3, r3, #0, #18
+ 218              		.loc 1 100 22 discriminator 3 view .LVU46
+ 219 0094 4360     		str	r3, [r0, #4]
+  97:Core/Src/max30102.c ****     for (i = 0; i < sampleCount; i++)
+ 220              		.loc 1 97 34 is_stmt 1 discriminator 3 view .LVU47
+  97:Core/Src/max30102.c ****     for (i = 0; i < sampleCount; i++)
+ 221              		.loc 1 97 35 is_stmt 0 discriminator 3 view .LVU48
+ 222 0096 0131     		adds	r1, r1, #1
+ 223              	.LVL7:
+  97:Core/Src/max30102.c ****     for (i = 0; i < sampleCount; i++)
+ 224              		.loc 1 97 35 discriminator 3 view .LVU49
+ 225 0098 C9B2     		uxtb	r1, r1
+ 226              	.LVL8:
+ 227              	.L10:
+  97:Core/Src/max30102.c ****     for (i = 0; i < sampleCount; i++)
+ 228              		.loc 1 97 17 is_stmt 1 discriminator 1 view .LVU50
+  97:Core/Src/max30102.c ****     for (i = 0; i < sampleCount; i++)
+ 229              		.loc 1 97 5 is_stmt 0 discriminator 1 view .LVU51
+ 230 009a 8D42     		cmp	r5, r1
+ 231 009c C8D8     		bhi	.L11
+ 101:Core/Src/max30102.c ****     }
+ 102:Core/Src/max30102.c **** }
+ 232              		.loc 1 102 1 view .LVU52
+ 233 009e 0DB0     		add	sp, sp, #52
+ 234              	.LCFI6:
+ 235              		.cfi_def_cfa_offset 12
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 7
+
+
+ 236              		@ sp needed
+ 237 00a0 30BD     		pop	{r4, r5, pc}
+ 238              	.LVL9:
+ 239              	.L15:
+ 240              		.loc 1 102 1 view .LVU53
+ 241 00a2 00BF     		.align	2
+ 242              	.L14:
+ 243 00a4 00000000 		.word	hi2c2
+ 244              		.cfi_endproc
+ 245              	.LFE67:
+ 247              		.section	.text.max30102_getStatus,"ax",%progbits
+ 248              		.align	1
+ 249              		.global	max30102_getStatus
+ 250              		.syntax unified
+ 251              		.thumb
+ 252              		.thumb_func
+ 254              	max30102_getStatus:
+ 255              	.LFB68:
+ 103:Core/Src/max30102.c **** 
+ 104:Core/Src/max30102.c **** uint8_t max30102_getStatus()
+ 105:Core/Src/max30102.c **** {
+ 256              		.loc 1 105 1 is_stmt 1 view -0
+ 257              		.cfi_startproc
+ 258              		@ args = 0, pretend = 0, frame = 8
+ 259              		@ frame_needed = 0, uses_anonymous_args = 0
+ 260 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 261              	.LCFI7:
+ 262              		.cfi_def_cfa_offset 24
+ 263              		.cfi_offset 4, -24
+ 264              		.cfi_offset 5, -20
+ 265              		.cfi_offset 6, -16
+ 266              		.cfi_offset 7, -12
+ 267              		.cfi_offset 8, -8
+ 268              		.cfi_offset 14, -4
+ 269 0004 86B0     		sub	sp, sp, #24
+ 270              	.LCFI8:
+ 271              		.cfi_def_cfa_offset 48
+ 106:Core/Src/max30102.c ****     uint8_t data = 0, dataTemp = 0;
+ 272              		.loc 1 106 5 view .LVU55
+ 273              	.LVL10:
+ 274              		.loc 1 106 23 is_stmt 0 view .LVU56
+ 275 0006 0022     		movs	r2, #0
+ 276 0008 8DF81720 		strb	r2, [sp, #23]
+ 107:Core/Src/max30102.c ****     HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADDR_READ, RES_INTERRUPT_STATUS_1, I2C_MEMADD_SIZE_8BIT, &dat
+ 277              		.loc 1 107 5 is_stmt 1 view .LVU57
+ 278 000c 0F4D     		ldr	r5, .L18
+ 279 000e 0A27     		movs	r7, #10
+ 280 0010 0297     		str	r7, [sp, #8]
+ 281 0012 0124     		movs	r4, #1
+ 282 0014 0194     		str	r4, [sp, #4]
+ 283 0016 0DF11706 		add	r6, sp, #23
+ 284 001a 0096     		str	r6, [sp]
+ 285 001c 2346     		mov	r3, r4
+ 286 001e AF21     		movs	r1, #175
+ 287 0020 2846     		mov	r0, r5
+ 288 0022 FFF7FEFF 		bl	HAL_I2C_Mem_Read
+ 289              	.LVL11:
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 8
+
+
+ 108:Core/Src/max30102.c ****     data = dataTemp;
+ 290              		.loc 1 108 5 view .LVU58
+ 291              		.loc 1 108 10 is_stmt 0 view .LVU59
+ 292 0026 9DF81780 		ldrb	r8, [sp, #23]	@ zero_extendqisi2
+ 293              	.LVL12:
+ 109:Core/Src/max30102.c ****     HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADDR_READ, RES_INTERRUPT_STATUS_2, I2C_MEMADD_SIZE_8BIT, &dat
+ 294              		.loc 1 109 5 is_stmt 1 view .LVU60
+ 295 002a 0297     		str	r7, [sp, #8]
+ 296 002c 0194     		str	r4, [sp, #4]
+ 297 002e 0096     		str	r6, [sp]
+ 298 0030 2346     		mov	r3, r4
+ 299 0032 2246     		mov	r2, r4
+ 300 0034 AF21     		movs	r1, #175
+ 301 0036 2846     		mov	r0, r5
+ 302 0038 FFF7FEFF 		bl	HAL_I2C_Mem_Read
+ 303              	.LVL13:
+ 110:Core/Src/max30102.c ****     return data | dataTemp;
+ 304              		.loc 1 110 5 view .LVU61
+ 305              		.loc 1 110 17 is_stmt 0 view .LVU62
+ 306 003c 9DF81700 		ldrb	r0, [sp, #23]	@ zero_extendqisi2
+ 111:Core/Src/max30102.c **** }
+ 307              		.loc 1 111 1 view .LVU63
+ 308 0040 48EA0000 		orr	r0, r8, r0
+ 309 0044 06B0     		add	sp, sp, #24
+ 310              	.LCFI9:
+ 311              		.cfi_def_cfa_offset 24
+ 312              		@ sp needed
+ 313 0046 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 314              	.LVL14:
+ 315              	.L19:
+ 316              		.loc 1 111 1 view .LVU64
+ 317 004a 00BF     		.align	2
+ 318              	.L18:
+ 319 004c 00000000 		.word	hi2c2
+ 320              		.cfi_endproc
+ 321              	.LFE68:
+ 323              		.section	.text.max30102_init,"ax",%progbits
+ 324              		.align	1
+ 325              		.global	max30102_init
+ 326              		.syntax unified
+ 327              		.thumb
+ 328              		.thumb_func
+ 330              	max30102_init:
+ 331              	.LFB65:
+  33:Core/Src/max30102.c ****     uint8_t data = 0;
+ 332              		.loc 1 33 1 is_stmt 1 view -0
+ 333              		.cfi_startproc
+ 334              		@ args = 0, pretend = 0, frame = 8
+ 335              		@ frame_needed = 0, uses_anonymous_args = 0
+ 336 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 337              	.LCFI10:
+ 338              		.cfi_def_cfa_offset 20
+ 339              		.cfi_offset 4, -20
+ 340              		.cfi_offset 5, -16
+ 341              		.cfi_offset 6, -12
+ 342              		.cfi_offset 7, -8
+ 343              		.cfi_offset 14, -4
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 9
+
+
+ 344 0002 87B0     		sub	sp, sp, #28
+ 345              	.LCFI11:
+ 346              		.cfi_def_cfa_offset 48
+  34:Core/Src/max30102.c ****     /*reset*/
+ 347              		.loc 1 34 5 view .LVU66
+  34:Core/Src/max30102.c ****     /*reset*/
+ 348              		.loc 1 34 13 is_stmt 0 view .LVU67
+ 349 0004 0023     		movs	r3, #0
+ 350 0006 8DF81730 		strb	r3, [sp, #23]
+  36:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_MODE_CONFIGURATION, I2C_MEMADD_SIZE_8BIT, &d
+ 351              		.loc 1 36 5 is_stmt 1 view .LVU68
+  36:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_MODE_CONFIGURATION, I2C_MEMADD_SIZE_8BIT, &d
+ 352              		.loc 1 36 10 is_stmt 0 view .LVU69
+ 353 000a 4023     		movs	r3, #64
+ 354 000c 8DF81730 		strb	r3, [sp, #23]
+  37:Core/Src/max30102.c ****     do
+ 355              		.loc 1 37 5 is_stmt 1 view .LVU70
+ 356 0010 0A23     		movs	r3, #10
+ 357 0012 0293     		str	r3, [sp, #8]
+ 358 0014 0123     		movs	r3, #1
+ 359 0016 0193     		str	r3, [sp, #4]
+ 360 0018 0DF11702 		add	r2, sp, #23
+ 361 001c 0092     		str	r2, [sp]
+ 362 001e 0922     		movs	r2, #9
+ 363 0020 AE21     		movs	r1, #174
+ 364 0022 3E48     		ldr	r0, .L23
+ 365 0024 FFF7FEFF 		bl	HAL_I2C_Mem_Write
+ 366              	.LVL15:
+ 367              	.L21:
+  38:Core/Src/max30102.c ****     {
+ 368              		.loc 1 38 5 discriminator 1 view .LVU71
+  40:Core/Src/max30102.c ****     } while (data & 0x40);
+ 369              		.loc 1 40 9 discriminator 1 view .LVU72
+ 370 0028 0A23     		movs	r3, #10
+ 371 002a 0293     		str	r3, [sp, #8]
+ 372 002c 0123     		movs	r3, #1
+ 373 002e 0193     		str	r3, [sp, #4]
+ 374 0030 0DF11702 		add	r2, sp, #23
+ 375 0034 0092     		str	r2, [sp]
+ 376 0036 0922     		movs	r2, #9
+ 377 0038 AF21     		movs	r1, #175
+ 378 003a 3848     		ldr	r0, .L23
+ 379 003c FFF7FEFF 		bl	HAL_I2C_Mem_Read
+ 380              	.LVL16:
+  41:Core/Src/max30102.c ****     /*新数据中断*/
+ 381              		.loc 1 41 13 discriminator 1 view .LVU73
+  41:Core/Src/max30102.c ****     /*新数据中断*/
+ 382              		.loc 1 41 19 is_stmt 0 discriminator 1 view .LVU74
+ 383 0040 9DF81730 		ldrb	r3, [sp, #23]	@ zero_extendqisi2
+  41:Core/Src/max30102.c ****     /*新数据中断*/
+ 384              		.loc 1 41 5 discriminator 1 view .LVU75
+ 385 0044 13F0400F 		tst	r3, #64
+ 386 0048 EED1     		bne	.L21
+  43:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_INTERRUPT_ENABLE_1, I2C_MEMADD_SIZE_8BIT, &d
+ 387              		.loc 1 43 5 is_stmt 1 view .LVU76
+  43:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_INTERRUPT_ENABLE_1, I2C_MEMADD_SIZE_8BIT, &d
+ 388              		.loc 1 43 10 is_stmt 0 view .LVU77
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 10
+
+
+ 389 004a 4023     		movs	r3, #64
+ 390 004c 8DF81730 		strb	r3, [sp, #23]
+  44:Core/Src/max30102.c ****     //    /* 温度转换完中断*/
+ 391              		.loc 1 44 5 is_stmt 1 view .LVU78
+ 392 0050 324E     		ldr	r6, .L23
+ 393 0052 0A25     		movs	r5, #10
+ 394 0054 0295     		str	r5, [sp, #8]
+ 395 0056 0124     		movs	r4, #1
+ 396 0058 0194     		str	r4, [sp, #4]
+ 397 005a 0DF11707 		add	r7, sp, #23
+ 398 005e 0097     		str	r7, [sp]
+ 399 0060 2346     		mov	r3, r4
+ 400 0062 0222     		movs	r2, #2
+ 401 0064 AE21     		movs	r1, #174
+ 402 0066 3046     		mov	r0, r6
+ 403 0068 FFF7FEFF 		bl	HAL_I2C_Mem_Write
+ 404              	.LVL17:
+  55:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_SPO2_CONFIGURATION, I2C_MEMADD_SIZE_8BIT, &d
+ 405              		.loc 1 55 5 view .LVU79
+  55:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_SPO2_CONFIGURATION, I2C_MEMADD_SIZE_8BIT, &d
+ 406              		.loc 1 55 10 is_stmt 0 view .LVU80
+ 407 006c 6323     		movs	r3, #99
+ 408 006e 8DF81730 		strb	r3, [sp, #23]
+  56:Core/Src/max30102.c ****     /*灯的亮度*/
+ 409              		.loc 1 56 5 is_stmt 1 view .LVU81
+ 410 0072 0295     		str	r5, [sp, #8]
+ 411 0074 0194     		str	r4, [sp, #4]
+ 412 0076 0097     		str	r7, [sp]
+ 413 0078 2346     		mov	r3, r4
+ 414 007a 2A46     		mov	r2, r5
+ 415 007c AE21     		movs	r1, #174
+ 416 007e 3046     		mov	r0, r6
+ 417 0080 FFF7FEFF 		bl	HAL_I2C_Mem_Write
+ 418              	.LVL18:
+  58:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_LED_PLUSE_AMPLITUDE_1, I2C_MEMADD_SIZE_8BIT,
+ 419              		.loc 1 58 5 view .LVU82
+  58:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_LED_PLUSE_AMPLITUDE_1, I2C_MEMADD_SIZE_8BIT,
+ 420              		.loc 1 58 10 is_stmt 0 view .LVU83
+ 421 0084 4723     		movs	r3, #71
+ 422 0086 8DF81730 		strb	r3, [sp, #23]
+  59:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_LED_PLUSE_AMPLITUDE_2, I2C_MEMADD_SIZE_8BIT,
+ 423              		.loc 1 59 5 is_stmt 1 view .LVU84
+ 424 008a 0295     		str	r5, [sp, #8]
+ 425 008c 0194     		str	r4, [sp, #4]
+ 426 008e 0097     		str	r7, [sp]
+ 427 0090 2346     		mov	r3, r4
+ 428 0092 0C22     		movs	r2, #12
+ 429 0094 AE21     		movs	r1, #174
+ 430 0096 3046     		mov	r0, r6
+ 431 0098 FFF7FEFF 		bl	HAL_I2C_Mem_Write
+ 432              	.LVL19:
+  60:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_PROXIMITY_MODE_LED_PLUSE_AMPLITUDE, I2C_MEMA
+ 433              		.loc 1 60 5 view .LVU85
+ 434 009c 0295     		str	r5, [sp, #8]
+ 435 009e 0194     		str	r4, [sp, #4]
+ 436 00a0 0097     		str	r7, [sp]
+ 437 00a2 2346     		mov	r3, r4
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 11
+
+
+ 438 00a4 0D22     		movs	r2, #13
+ 439 00a6 AE21     		movs	r1, #174
+ 440 00a8 3046     		mov	r0, r6
+ 441 00aa FFF7FEFF 		bl	HAL_I2C_Mem_Write
+ 442              	.LVL20:
+  61:Core/Src/max30102.c ****     /*FIFO clear*/
+ 443              		.loc 1 61 5 view .LVU86
+ 444 00ae 0295     		str	r5, [sp, #8]
+ 445 00b0 0194     		str	r4, [sp, #4]
+ 446 00b2 0097     		str	r7, [sp]
+ 447 00b4 2346     		mov	r3, r4
+ 448 00b6 1022     		movs	r2, #16
+ 449 00b8 AE21     		movs	r1, #174
+ 450 00ba 3046     		mov	r0, r6
+ 451 00bc FFF7FEFF 		bl	HAL_I2C_Mem_Write
+ 452              	.LVL21:
+  63:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_FIFO_WRITE_POINTER, I2C_MEMADD_SIZE_8BIT, &d
+ 453              		.loc 1 63 5 view .LVU87
+  63:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_FIFO_WRITE_POINTER, I2C_MEMADD_SIZE_8BIT, &d
+ 454              		.loc 1 63 10 is_stmt 0 view .LVU88
+ 455 00c0 0023     		movs	r3, #0
+ 456 00c2 8DF81730 		strb	r3, [sp, #23]
+  64:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_OVERFLOW_COUNTER, I2C_MEMADD_SIZE_8BIT, &dat
+ 457              		.loc 1 64 5 is_stmt 1 view .LVU89
+ 458 00c6 0295     		str	r5, [sp, #8]
+ 459 00c8 0194     		str	r4, [sp, #4]
+ 460 00ca 0097     		str	r7, [sp]
+ 461 00cc 2346     		mov	r3, r4
+ 462 00ce 0422     		movs	r2, #4
+ 463 00d0 AE21     		movs	r1, #174
+ 464 00d2 3046     		mov	r0, r6
+ 465 00d4 FFF7FEFF 		bl	HAL_I2C_Mem_Write
+ 466              	.LVL22:
+  65:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_FIFO_READ_POINTER, I2C_MEMADD_SIZE_8BIT, &da
+ 467              		.loc 1 65 5 view .LVU90
+ 468 00d8 0295     		str	r5, [sp, #8]
+ 469 00da 0194     		str	r4, [sp, #4]
+ 470 00dc 0097     		str	r7, [sp]
+ 471 00de 2346     		mov	r3, r4
+ 472 00e0 0522     		movs	r2, #5
+ 473 00e2 AE21     		movs	r1, #174
+ 474 00e4 3046     		mov	r0, r6
+ 475 00e6 FFF7FEFF 		bl	HAL_I2C_Mem_Write
+ 476              	.LVL23:
+  66:Core/Src/max30102.c ****     /*interrupt status clear*/
+ 477              		.loc 1 66 5 view .LVU91
+ 478 00ea 0295     		str	r5, [sp, #8]
+ 479 00ec 0194     		str	r4, [sp, #4]
+ 480 00ee 0097     		str	r7, [sp]
+ 481 00f0 2346     		mov	r3, r4
+ 482 00f2 0622     		movs	r2, #6
+ 483 00f4 AE21     		movs	r1, #174
+ 484 00f6 3046     		mov	r0, r6
+ 485 00f8 FFF7FEFF 		bl	HAL_I2C_Mem_Write
+ 486              	.LVL24:
+  68:Core/Src/max30102.c ****     // /*转换温度*/
+ 487              		.loc 1 68 5 view .LVU92
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 12
+
+
+ 488 00fc FFF7FEFF 		bl	max30102_getStatus
+ 489              	.LVL25:
+  73:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_MODE_CONFIGURATION, I2C_MEMADD_SIZE_8BIT, &d
+ 490              		.loc 1 73 5 view .LVU93
+  73:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_MODE_CONFIGURATION, I2C_MEMADD_SIZE_8BIT, &d
+ 491              		.loc 1 73 10 is_stmt 0 view .LVU94
+ 492 0100 0323     		movs	r3, #3
+ 493 0102 8DF81730 		strb	r3, [sp, #23]
+  74:Core/Src/max30102.c **** }
+ 494              		.loc 1 74 5 is_stmt 1 view .LVU95
+ 495 0106 0295     		str	r5, [sp, #8]
+ 496 0108 0194     		str	r4, [sp, #4]
+ 497 010a 0097     		str	r7, [sp]
+ 498 010c 2346     		mov	r3, r4
+ 499 010e 0922     		movs	r2, #9
+ 500 0110 AE21     		movs	r1, #174
+ 501 0112 3046     		mov	r0, r6
+ 502 0114 FFF7FEFF 		bl	HAL_I2C_Mem_Write
+ 503              	.LVL26:
+  75:Core/Src/max30102.c **** 
+ 504              		.loc 1 75 1 is_stmt 0 view .LVU96
+ 505 0118 07B0     		add	sp, sp, #28
+ 506              	.LCFI12:
+ 507              		.cfi_def_cfa_offset 20
+ 508              		@ sp needed
+ 509 011a F0BD     		pop	{r4, r5, r6, r7, pc}
+ 510              	.L24:
+ 511              		.align	2
+ 512              	.L23:
+ 513 011c 00000000 		.word	hi2c2
+ 514              		.cfi_endproc
+ 515              	.LFE65:
+ 517              		.section	.text.max30102_OFF,"ax",%progbits
+ 518              		.align	1
+ 519              		.global	max30102_OFF
+ 520              		.syntax unified
+ 521              		.thumb
+ 522              		.thumb_func
+ 524              	max30102_OFF:
+ 525              	.LFB69:
+ 112:Core/Src/max30102.c **** 
+ 113:Core/Src/max30102.c **** // 用这个要读状态确定是否转换完
+ 114:Core/Src/max30102.c **** // float max30102_getTemperature()
+ 115:Core/Src/max30102.c **** // {
+ 116:Core/Src/max30102.c **** //     int8_t dataTemp = 0;
+ 117:Core/Src/max30102.c **** //     float data;
+ 118:Core/Src/max30102.c **** //     HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADDR_READ, RES_DIE_TEMP_INTEGER, I2C_MEMADD_SIZE_8BIT, (ui
+ 119:Core/Src/max30102.c **** //     data = dataTemp;
+ 120:Core/Src/max30102.c **** //     HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADDR_READ, RES_DIE_TEMP_FRACTION, I2C_MEMADD_SIZE_8BIT, (u
+ 121:Core/Src/max30102.c **** //     data += dataTemp * 0.0625;
+ 122:Core/Src/max30102.c **** //     // 启动下一次转换
+ 123:Core/Src/max30102.c **** //     dataTemp = 1;
+ 124:Core/Src/max30102.c **** //     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_DIE_TEMPERATURE_CONFIG, I2C_MEMADD_SIZE_8
+ 125:Core/Src/max30102.c **** //     return data;
+ 126:Core/Src/max30102.c **** // }
+ 127:Core/Src/max30102.c **** 
+ 128:Core/Src/max30102.c **** void max30102_OFF()
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 13
+
+
+ 129:Core/Src/max30102.c **** {
+ 526              		.loc 1 129 1 is_stmt 1 view -0
+ 527              		.cfi_startproc
+ 528              		@ args = 0, pretend = 0, frame = 8
+ 529              		@ frame_needed = 0, uses_anonymous_args = 0
+ 530 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 531              	.LCFI13:
+ 532              		.cfi_def_cfa_offset 20
+ 533              		.cfi_offset 4, -20
+ 534              		.cfi_offset 5, -16
+ 535              		.cfi_offset 6, -12
+ 536              		.cfi_offset 7, -8
+ 537              		.cfi_offset 14, -4
+ 538 0002 87B0     		sub	sp, sp, #28
+ 539              	.LCFI14:
+ 540              		.cfi_def_cfa_offset 48
+ 130:Core/Src/max30102.c ****     uint8_t data = 0;
+ 541              		.loc 1 130 5 view .LVU98
+ 542              		.loc 1 130 13 is_stmt 0 view .LVU99
+ 543 0004 0023     		movs	r3, #0
+ 544 0006 8DF81730 		strb	r3, [sp, #23]
+ 131:Core/Src/max30102.c ****     HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADDR_READ, RES_MODE_CONFIGURATION, I2C_MEMADD_SIZE_8BIT, &dat
+ 545              		.loc 1 131 5 is_stmt 1 view .LVU100
+ 546 000a 0F4E     		ldr	r6, .L27
+ 547 000c 0A27     		movs	r7, #10
+ 548 000e 0297     		str	r7, [sp, #8]
+ 549 0010 0124     		movs	r4, #1
+ 550 0012 0194     		str	r4, [sp, #4]
+ 551 0014 0DF11705 		add	r5, sp, #23
+ 552 0018 0095     		str	r5, [sp]
+ 553 001a 2346     		mov	r3, r4
+ 554 001c 0922     		movs	r2, #9
+ 555 001e AF21     		movs	r1, #175
+ 556 0020 3046     		mov	r0, r6
+ 557 0022 FFF7FEFF 		bl	HAL_I2C_Mem_Read
+ 558              	.LVL27:
+ 132:Core/Src/max30102.c ****     data |= 0x80;
+ 559              		.loc 1 132 5 view .LVU101
+ 560              		.loc 1 132 10 is_stmt 0 view .LVU102
+ 561 0026 9DF81730 		ldrb	r3, [sp, #23]	@ zero_extendqisi2
+ 562 002a 63F07F03 		orn	r3, r3, #127
+ 563 002e 8DF81730 		strb	r3, [sp, #23]
+ 133:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_MODE_CONFIGURATION, I2C_MEMADD_SIZE_8BIT, &d
+ 564              		.loc 1 133 5 is_stmt 1 view .LVU103
+ 565 0032 0297     		str	r7, [sp, #8]
+ 566 0034 0194     		str	r4, [sp, #4]
+ 567 0036 0095     		str	r5, [sp]
+ 568 0038 2346     		mov	r3, r4
+ 569 003a 0922     		movs	r2, #9
+ 570 003c AE21     		movs	r1, #174
+ 571 003e 3046     		mov	r0, r6
+ 572 0040 FFF7FEFF 		bl	HAL_I2C_Mem_Write
+ 573              	.LVL28:
+ 134:Core/Src/max30102.c **** }
+ 574              		.loc 1 134 1 is_stmt 0 view .LVU104
+ 575 0044 07B0     		add	sp, sp, #28
+ 576              	.LCFI15:
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 14
+
+
+ 577              		.cfi_def_cfa_offset 20
+ 578              		@ sp needed
+ 579 0046 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 580              	.L28:
+ 581              		.align	2
+ 582              	.L27:
+ 583 0048 00000000 		.word	hi2c2
+ 584              		.cfi_endproc
+ 585              	.LFE69:
+ 587              		.section	.text.max30102_ON,"ax",%progbits
+ 588              		.align	1
+ 589              		.global	max30102_ON
+ 590              		.syntax unified
+ 591              		.thumb
+ 592              		.thumb_func
+ 594              	max30102_ON:
+ 595              	.LFB70:
+ 135:Core/Src/max30102.c **** 
+ 136:Core/Src/max30102.c **** void max30102_ON()
+ 137:Core/Src/max30102.c **** {
+ 596              		.loc 1 137 1 is_stmt 1 view -0
+ 597              		.cfi_startproc
+ 598              		@ args = 0, pretend = 0, frame = 8
+ 599              		@ frame_needed = 0, uses_anonymous_args = 0
+ 600 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 601              	.LCFI16:
+ 602              		.cfi_def_cfa_offset 20
+ 603              		.cfi_offset 4, -20
+ 604              		.cfi_offset 5, -16
+ 605              		.cfi_offset 6, -12
+ 606              		.cfi_offset 7, -8
+ 607              		.cfi_offset 14, -4
+ 608 0002 87B0     		sub	sp, sp, #28
+ 609              	.LCFI17:
+ 610              		.cfi_def_cfa_offset 48
+ 138:Core/Src/max30102.c ****     uint8_t data = 0;
+ 611              		.loc 1 138 5 view .LVU106
+ 612              		.loc 1 138 13 is_stmt 0 view .LVU107
+ 613 0004 0023     		movs	r3, #0
+ 614 0006 8DF81730 		strb	r3, [sp, #23]
+ 139:Core/Src/max30102.c ****     HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADDR_READ, RES_MODE_CONFIGURATION, I2C_MEMADD_SIZE_8BIT, &dat
+ 615              		.loc 1 139 5 is_stmt 1 view .LVU108
+ 616 000a 0F4E     		ldr	r6, .L31
+ 617 000c 0A27     		movs	r7, #10
+ 618 000e 0297     		str	r7, [sp, #8]
+ 619 0010 0124     		movs	r4, #1
+ 620 0012 0194     		str	r4, [sp, #4]
+ 621 0014 0DF11705 		add	r5, sp, #23
+ 622 0018 0095     		str	r5, [sp]
+ 623 001a 2346     		mov	r3, r4
+ 624 001c 0922     		movs	r2, #9
+ 625 001e AF21     		movs	r1, #175
+ 626 0020 3046     		mov	r0, r6
+ 627 0022 FFF7FEFF 		bl	HAL_I2C_Mem_Read
+ 628              	.LVL29:
+ 140:Core/Src/max30102.c ****     data &= ~(0x80);
+ 629              		.loc 1 140 5 view .LVU109
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 15
+
+
+ 630              		.loc 1 140 10 is_stmt 0 view .LVU110
+ 631 0026 9DF81730 		ldrb	r3, [sp, #23]	@ zero_extendqisi2
+ 632 002a 03F07F03 		and	r3, r3, #127
+ 633 002e 8DF81730 		strb	r3, [sp, #23]
+ 141:Core/Src/max30102.c ****     HAL_I2C_Mem_Write(&hi2c2, MAX30102_ADDR_WRITE, RES_MODE_CONFIGURATION, I2C_MEMADD_SIZE_8BIT, &d
+ 634              		.loc 1 141 5 is_stmt 1 view .LVU111
+ 635 0032 0297     		str	r7, [sp, #8]
+ 636 0034 0194     		str	r4, [sp, #4]
+ 637 0036 0095     		str	r5, [sp]
+ 638 0038 2346     		mov	r3, r4
+ 639 003a 0922     		movs	r2, #9
+ 640 003c AE21     		movs	r1, #174
+ 641 003e 3046     		mov	r0, r6
+ 642 0040 FFF7FEFF 		bl	HAL_I2C_Mem_Write
+ 643              	.LVL30:
+ 142:Core/Src/max30102.c **** }
+ 644              		.loc 1 142 1 is_stmt 0 view .LVU112
+ 645 0044 07B0     		add	sp, sp, #28
+ 646              	.LCFI18:
+ 647              		.cfi_def_cfa_offset 20
+ 648              		@ sp needed
+ 649 0046 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 650              	.L32:
+ 651              		.align	2
+ 652              	.L31:
+ 653 0048 00000000 		.word	hi2c2
+ 654              		.cfi_endproc
+ 655              	.LFE70:
+ 657              		.section	.text.filter,"ax",%progbits
+ 658              		.align	1
+ 659              		.global	filter
+ 660              		.syntax unified
+ 661              		.thumb
+ 662              		.thumb_func
+ 664              	filter:
+ 665              	.LVL31:
+ 666              	.LFB71:
+ 143:Core/Src/max30102.c **** 
+ 144:Core/Src/max30102.c **** /******************************计算******************************/
+ 145:Core/Src/max30102.c **** 
+ 146:Core/Src/max30102.c **** #define BUFF_SIZE 50
+ 147:Core/Src/max30102.c **** SAMPLE sampleBuff[BUFF_SIZE];
+ 148:Core/Src/max30102.c **** 
+ 149:Core/Src/max30102.c **** uint8_t heartRate = 0;
+ 150:Core/Src/max30102.c **** uint8_t spo2 = 0;
+ 151:Core/Src/max30102.c **** 
+ 152:Core/Src/max30102.c **** uint16_t redAC = 0;
+ 153:Core/Src/max30102.c **** uint32_t redDC = 0;
+ 154:Core/Src/max30102.c **** uint16_t iRedAC = 0;
+ 155:Core/Src/max30102.c **** uint32_t iRedDC = 0;
+ 156:Core/Src/max30102.c **** 
+ 157:Core/Src/max30102.c **** #define FILTER_LEVEL 8 /*滤波等级*/
+ 158:Core/Src/max30102.c **** void filter(SAMPLE *s)
+ 159:Core/Src/max30102.c **** {
+ 667              		.loc 1 159 1 is_stmt 1 view -0
+ 668              		.cfi_startproc
+ 669              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 16
+
+
+ 670              		@ frame_needed = 0, uses_anonymous_args = 0
+ 671              		.loc 1 159 1 is_stmt 0 view .LVU114
+ 672 0000 00B5     		push	{lr}
+ 673              	.LCFI19:
+ 674              		.cfi_def_cfa_offset 4
+ 675              		.cfi_offset 14, -4
+ 160:Core/Src/max30102.c ****     uint8_t i;
+ 676              		.loc 1 160 5 is_stmt 1 view .LVU115
+ 161:Core/Src/max30102.c ****     uint32_t red = 0;
+ 677              		.loc 1 161 5 view .LVU116
+ 678              	.LVL32:
+ 162:Core/Src/max30102.c ****     uint32_t ired = 0;
+ 679              		.loc 1 162 5 view .LVU117
+ 163:Core/Src/max30102.c ****     for (i = 0; i < FILTER_LEVEL - 1; i++)
+ 680              		.loc 1 163 5 view .LVU118
+ 162:Core/Src/max30102.c ****     uint32_t ired = 0;
+ 681              		.loc 1 162 14 is_stmt 0 view .LVU119
+ 682 0002 0021     		movs	r1, #0
+ 161:Core/Src/max30102.c ****     uint32_t red = 0;
+ 683              		.loc 1 161 14 view .LVU120
+ 684 0004 8C46     		mov	ip, r1
+ 685              		.loc 1 163 12 view .LVU121
+ 686 0006 0B46     		mov	r3, r1
+ 687              		.loc 1 163 5 view .LVU122
+ 688 0008 09E0     		b	.L34
+ 689              	.LVL33:
+ 690              	.L35:
+ 164:Core/Src/max30102.c ****     {
+ 165:Core/Src/max30102.c ****         red += sampleBuff[i].red;
+ 691              		.loc 1 165 9 is_stmt 1 discriminator 3 view .LVU123
+ 692              		.loc 1 165 29 is_stmt 0 discriminator 3 view .LVU124
+ 693 000a 0B4A     		ldr	r2, .L37
+ 694              		.loc 1 165 13 discriminator 3 view .LVU125
+ 695 000c 52F833E0 		ldr	lr, [r2, r3, lsl #3]
+ 696 0010 F444     		add	ip, ip, lr
+ 697              	.LVL34:
+ 166:Core/Src/max30102.c ****         ired += sampleBuff[i].iRed;
+ 698              		.loc 1 166 9 is_stmt 1 discriminator 3 view .LVU126
+ 699              		.loc 1 166 30 is_stmt 0 discriminator 3 view .LVU127
+ 700 0012 02EBC302 		add	r2, r2, r3, lsl #3
+ 701 0016 5268     		ldr	r2, [r2, #4]
+ 702              		.loc 1 166 14 discriminator 3 view .LVU128
+ 703 0018 1144     		add	r1, r1, r2
+ 704              	.LVL35:
+ 163:Core/Src/max30102.c ****     for (i = 0; i < FILTER_LEVEL - 1; i++)
+ 705              		.loc 1 163 39 is_stmt 1 discriminator 3 view .LVU129
+ 163:Core/Src/max30102.c ****     for (i = 0; i < FILTER_LEVEL - 1; i++)
+ 706              		.loc 1 163 40 is_stmt 0 discriminator 3 view .LVU130
+ 707 001a 0133     		adds	r3, r3, #1
+ 708              	.LVL36:
+ 163:Core/Src/max30102.c ****     for (i = 0; i < FILTER_LEVEL - 1; i++)
+ 709              		.loc 1 163 40 discriminator 3 view .LVU131
+ 710 001c DBB2     		uxtb	r3, r3
+ 711              	.LVL37:
+ 712              	.L34:
+ 163:Core/Src/max30102.c ****     for (i = 0; i < FILTER_LEVEL - 1; i++)
+ 713              		.loc 1 163 17 is_stmt 1 discriminator 1 view .LVU132
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 17
+
+
+ 163:Core/Src/max30102.c ****     for (i = 0; i < FILTER_LEVEL - 1; i++)
+ 714              		.loc 1 163 5 is_stmt 0 discriminator 1 view .LVU133
+ 715 001e 062B     		cmp	r3, #6
+ 716 0020 F3D9     		bls	.L35
+ 167:Core/Src/max30102.c ****     }
+ 168:Core/Src/max30102.c ****     s->red = (red + s->red) / FILTER_LEVEL;
+ 717              		.loc 1 168 5 is_stmt 1 view .LVU134
+ 718              		.loc 1 168 22 is_stmt 0 view .LVU135
+ 719 0022 0368     		ldr	r3, [r0]
+ 720              	.LVL38:
+ 721              		.loc 1 168 19 view .LVU136
+ 722 0024 6344     		add	r3, r3, ip
+ 723              		.loc 1 168 29 view .LVU137
+ 724 0026 DB08     		lsrs	r3, r3, #3
+ 725              		.loc 1 168 12 view .LVU138
+ 726 0028 0360     		str	r3, [r0]
+ 169:Core/Src/max30102.c ****     s->iRed = (ired + s->iRed) / FILTER_LEVEL;
+ 727              		.loc 1 169 5 is_stmt 1 view .LVU139
+ 728              		.loc 1 169 24 is_stmt 0 view .LVU140
+ 729 002a 4368     		ldr	r3, [r0, #4]
+ 730              		.loc 1 169 21 view .LVU141
+ 731 002c 0B44     		add	r3, r3, r1
+ 732              		.loc 1 169 32 view .LVU142
+ 733 002e DB08     		lsrs	r3, r3, #3
+ 734              		.loc 1 169 13 view .LVU143
+ 735 0030 4360     		str	r3, [r0, #4]
+ 170:Core/Src/max30102.c **** }
+ 736              		.loc 1 170 1 view .LVU144
+ 737 0032 5DF804FB 		ldr	pc, [sp], #4
+ 738              	.L38:
+ 739 0036 00BF     		.align	2
+ 740              	.L37:
+ 741 0038 00000000 		.word	.LANCHOR0
+ 742              		.cfi_endproc
+ 743              	.LFE71:
+ 745              		.section	.text.buffInsert,"ax",%progbits
+ 746              		.align	1
+ 747              		.global	buffInsert
+ 748              		.syntax unified
+ 749              		.thumb
+ 750              		.thumb_func
+ 752              	buffInsert:
+ 753              	.LFB72:
+ 171:Core/Src/max30102.c **** 
+ 172:Core/Src/max30102.c **** void buffInsert(SAMPLE s)
+ 173:Core/Src/max30102.c **** {
+ 754              		.loc 1 173 1 is_stmt 1 view -0
+ 755              		.cfi_startproc
+ 756              		@ args = 0, pretend = 0, frame = 8
+ 757              		@ frame_needed = 0, uses_anonymous_args = 0
+ 758              		@ link register save eliminated.
+ 759 0000 82B0     		sub	sp, sp, #8
+ 760              	.LCFI20:
+ 761              		.cfi_def_cfa_offset 8
+ 762 0002 02AB     		add	r3, sp, #8
+ 763 0004 03E90300 		stmdb	r3, {r0, r1}
+ 174:Core/Src/max30102.c ****     uint8_t i;
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 18
+
+
+ 764              		.loc 1 174 5 view .LVU146
+ 175:Core/Src/max30102.c ****     for (i = BUFF_SIZE - 1; i > 0; i--)
+ 765              		.loc 1 175 5 view .LVU147
+ 766              	.LVL39:
+ 767              		.loc 1 175 12 is_stmt 0 view .LVU148
+ 768 0008 3122     		movs	r2, #49
+ 769              		.loc 1 175 5 view .LVU149
+ 770 000a 0CE0     		b	.L40
+ 771              	.LVL40:
+ 772              	.L41:
+ 176:Core/Src/max30102.c ****     {
+ 177:Core/Src/max30102.c ****         sampleBuff[i].red = sampleBuff[i - 1].red;
+ 773              		.loc 1 177 9 is_stmt 1 discriminator 3 view .LVU150
+ 774              		.loc 1 177 42 is_stmt 0 discriminator 3 view .LVU151
+ 775 000c 511E     		subs	r1, r2, #1
+ 776              		.loc 1 177 46 discriminator 3 view .LVU152
+ 777 000e 0A4B     		ldr	r3, .L43
+ 778 0010 53F83100 		ldr	r0, [r3, r1, lsl #3]
+ 779              		.loc 1 177 27 discriminator 3 view .LVU153
+ 780 0014 43F83200 		str	r0, [r3, r2, lsl #3]
+ 178:Core/Src/max30102.c ****         sampleBuff[i].iRed = sampleBuff[i - 1].iRed;
+ 781              		.loc 1 178 9 is_stmt 1 discriminator 3 view .LVU154
+ 782              		.loc 1 178 47 is_stmt 0 discriminator 3 view .LVU155
+ 783 0018 03EBC100 		add	r0, r3, r1, lsl #3
+ 784 001c 4068     		ldr	r0, [r0, #4]
+ 785              		.loc 1 178 28 discriminator 3 view .LVU156
+ 786 001e 03EBC203 		add	r3, r3, r2, lsl #3
+ 787 0022 5860     		str	r0, [r3, #4]
+ 175:Core/Src/max30102.c ****     for (i = BUFF_SIZE - 1; i > 0; i--)
+ 788              		.loc 1 175 36 is_stmt 1 discriminator 3 view .LVU157
+ 175:Core/Src/max30102.c ****     for (i = BUFF_SIZE - 1; i > 0; i--)
+ 789              		.loc 1 175 37 is_stmt 0 discriminator 3 view .LVU158
+ 790 0024 CAB2     		uxtb	r2, r1
+ 791              	.LVL41:
+ 792              	.L40:
+ 175:Core/Src/max30102.c ****     for (i = BUFF_SIZE - 1; i > 0; i--)
+ 793              		.loc 1 175 29 is_stmt 1 discriminator 1 view .LVU159
+ 175:Core/Src/max30102.c ****     for (i = BUFF_SIZE - 1; i > 0; i--)
+ 794              		.loc 1 175 5 is_stmt 0 discriminator 1 view .LVU160
+ 795 0026 002A     		cmp	r2, #0
+ 796 0028 F0D1     		bne	.L41
+ 179:Core/Src/max30102.c ****     }
+ 180:Core/Src/max30102.c ****     sampleBuff[0].red = s.red;
+ 797              		.loc 1 180 5 is_stmt 1 view .LVU161
+ 798              		.loc 1 180 23 is_stmt 0 view .LVU162
+ 799 002a 034B     		ldr	r3, .L43
+ 800 002c 009A     		ldr	r2, [sp]
+ 801              	.LVL42:
+ 802              		.loc 1 180 23 view .LVU163
+ 803 002e 1A60     		str	r2, [r3]
+ 181:Core/Src/max30102.c ****     sampleBuff[0].iRed = s.iRed;
+ 804              		.loc 1 181 5 is_stmt 1 view .LVU164
+ 805              		.loc 1 181 27 is_stmt 0 view .LVU165
+ 806 0030 019A     		ldr	r2, [sp, #4]
+ 807              		.loc 1 181 24 view .LVU166
+ 808 0032 5A60     		str	r2, [r3, #4]
+ 182:Core/Src/max30102.c **** }
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 19
+
+
+ 809              		.loc 1 182 1 view .LVU167
+ 810 0034 02B0     		add	sp, sp, #8
+ 811              	.LCFI21:
+ 812              		.cfi_def_cfa_offset 0
+ 813              		@ sp needed
+ 814 0036 7047     		bx	lr
+ 815              	.L44:
+ 816              		.align	2
+ 817              	.L43:
+ 818 0038 00000000 		.word	.LANCHOR0
+ 819              		.cfi_endproc
+ 820              	.LFE72:
+ 822              		.section	.text.calAcDc,"ax",%progbits
+ 823              		.align	1
+ 824              		.global	calAcDc
+ 825              		.syntax unified
+ 826              		.thumb
+ 827              		.thumb_func
+ 829              	calAcDc:
+ 830              	.LVL43:
+ 831              	.LFB73:
+ 183:Core/Src/max30102.c **** 
+ 184:Core/Src/max30102.c **** void calAcDc(uint16_t *rac, uint32_t *rdc, uint16_t *iac, uint32_t *idc)
+ 185:Core/Src/max30102.c **** {
+ 832              		.loc 1 185 1 is_stmt 1 view -0
+ 833              		.cfi_startproc
+ 834              		@ args = 0, pretend = 0, frame = 0
+ 835              		@ frame_needed = 0, uses_anonymous_args = 0
+ 836              		.loc 1 185 1 is_stmt 0 view .LVU169
+ 837 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 838              	.LCFI22:
+ 839              		.cfi_def_cfa_offset 24
+ 840              		.cfi_offset 4, -24
+ 841              		.cfi_offset 5, -20
+ 842              		.cfi_offset 6, -16
+ 843              		.cfi_offset 7, -12
+ 844              		.cfi_offset 8, -8
+ 845              		.cfi_offset 14, -4
+ 846 0004 0546     		mov	r5, r0
+ 847 0006 0E46     		mov	r6, r1
+ 848 0008 1746     		mov	r7, r2
+ 849 000a 9846     		mov	r8, r3
+ 186:Core/Src/max30102.c ****     uint32_t rMax = sampleBuff[0].red;
+ 850              		.loc 1 186 5 is_stmt 1 view .LVU170
+ 851              		.loc 1 186 14 is_stmt 0 view .LVU171
+ 852 000c 184B     		ldr	r3, .L58
+ 853              	.LVL44:
+ 854              		.loc 1 186 14 view .LVU172
+ 855 000e 1968     		ldr	r1, [r3]
+ 856              	.LVL45:
+ 187:Core/Src/max30102.c ****     uint32_t rMin = sampleBuff[0].red;
+ 857              		.loc 1 187 5 is_stmt 1 view .LVU173
+ 188:Core/Src/max30102.c ****     uint32_t iMax = sampleBuff[0].iRed;
+ 858              		.loc 1 188 5 view .LVU174
+ 859              		.loc 1 188 14 is_stmt 0 view .LVU175
+ 860 0010 5A68     		ldr	r2, [r3, #4]
+ 861              	.LVL46:
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 20
+
+
+ 189:Core/Src/max30102.c ****     uint32_t iMin = sampleBuff[0].iRed;
+ 862              		.loc 1 189 5 is_stmt 1 view .LVU176
+ 190:Core/Src/max30102.c **** 
+ 191:Core/Src/max30102.c ****     uint8_t i;
+ 863              		.loc 1 191 5 view .LVU177
+ 192:Core/Src/max30102.c ****     for (i = 0; i < BUFF_SIZE; i++)
+ 864              		.loc 1 192 5 view .LVU178
+ 189:Core/Src/max30102.c ****     uint32_t iMin = sampleBuff[0].iRed;
+ 865              		.loc 1 189 14 is_stmt 0 view .LVU179
+ 866 0012 1046     		mov	r0, r2
+ 867              	.LVL47:
+ 187:Core/Src/max30102.c ****     uint32_t iMax = sampleBuff[0].iRed;
+ 868              		.loc 1 187 14 view .LVU180
+ 869 0014 0C46     		mov	r4, r1
+ 870              		.loc 1 192 12 view .LVU181
+ 871 0016 4FF0000C 		mov	ip, #0
+ 872              		.loc 1 192 5 view .LVU182
+ 873 001a 03E0     		b	.L46
+ 874              	.LVL48:
+ 875              	.L50:
+ 876              		.loc 1 192 32 is_stmt 1 discriminator 2 view .LVU183
+ 877              		.loc 1 192 33 is_stmt 0 discriminator 2 view .LVU184
+ 878 001c 0CF1010C 		add	ip, ip, #1
+ 879              	.LVL49:
+ 880              		.loc 1 192 33 discriminator 2 view .LVU185
+ 881 0020 5FFA8CFC 		uxtb	ip, ip
+ 882              	.LVL50:
+ 883              	.L46:
+ 884              		.loc 1 192 17 is_stmt 1 discriminator 1 view .LVU186
+ 885              		.loc 1 192 5 is_stmt 0 discriminator 1 view .LVU187
+ 886 0024 BCF1310F 		cmp	ip, #49
+ 887 0028 15D8     		bhi	.L57
+ 193:Core/Src/max30102.c ****     {
+ 194:Core/Src/max30102.c ****         if (sampleBuff[i].red > rMax)
+ 888              		.loc 1 194 9 is_stmt 1 view .LVU188
+ 889              		.loc 1 194 26 is_stmt 0 view .LVU189
+ 890 002a E646     		mov	lr, ip
+ 891 002c 104B     		ldr	r3, .L58
+ 892 002e 53F83C30 		ldr	r3, [r3, ip, lsl #3]
+ 893              		.loc 1 194 12 view .LVU190
+ 894 0032 8B42     		cmp	r3, r1
+ 895 0034 00D9     		bls	.L47
+ 195:Core/Src/max30102.c ****             rMax = sampleBuff[i].red;
+ 896              		.loc 1 195 18 view .LVU191
+ 897 0036 1946     		mov	r1, r3
+ 898              	.LVL51:
+ 899              	.L47:
+ 196:Core/Src/max30102.c ****         if (sampleBuff[i].red < rMin)
+ 900              		.loc 1 196 9 is_stmt 1 view .LVU192
+ 901              		.loc 1 196 12 is_stmt 0 view .LVU193
+ 902 0038 A342     		cmp	r3, r4
+ 903 003a 00D2     		bcs	.L48
+ 197:Core/Src/max30102.c ****             rMin = sampleBuff[i].red;
+ 904              		.loc 1 197 18 view .LVU194
+ 905 003c 1C46     		mov	r4, r3
+ 906              	.LVL52:
+ 907              	.L48:
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 21
+
+
+ 198:Core/Src/max30102.c ****         if (sampleBuff[i].iRed > iMax)
+ 908              		.loc 1 198 9 is_stmt 1 view .LVU195
+ 909              		.loc 1 198 26 is_stmt 0 view .LVU196
+ 910 003e 0C4B     		ldr	r3, .L58
+ 911 0040 03EBCE0E 		add	lr, r3, lr, lsl #3
+ 912 0044 DEF80430 		ldr	r3, [lr, #4]
+ 913              		.loc 1 198 12 view .LVU197
+ 914 0048 9342     		cmp	r3, r2
+ 915 004a 00D9     		bls	.L49
+ 199:Core/Src/max30102.c ****             iMax = sampleBuff[i].iRed;
+ 916              		.loc 1 199 18 view .LVU198
+ 917 004c 1A46     		mov	r2, r3
+ 918              	.LVL53:
+ 919              	.L49:
+ 200:Core/Src/max30102.c ****         if (sampleBuff[i].iRed < iMin)
+ 920              		.loc 1 200 9 is_stmt 1 view .LVU199
+ 921              		.loc 1 200 12 is_stmt 0 view .LVU200
+ 922 004e 8342     		cmp	r3, r0
+ 923 0050 E4D2     		bcs	.L50
+ 201:Core/Src/max30102.c ****             iMin = sampleBuff[i].iRed;
+ 924              		.loc 1 201 18 view .LVU201
+ 925 0052 1846     		mov	r0, r3
+ 926              	.LVL54:
+ 927              		.loc 1 201 18 view .LVU202
+ 928 0054 E2E7     		b	.L50
+ 929              	.LVL55:
+ 930              	.L57:
+ 202:Core/Src/max30102.c ****     }
+ 203:Core/Src/max30102.c ****     *rac = rMax - rMin;
+ 931              		.loc 1 203 5 is_stmt 1 view .LVU203
+ 932              		.loc 1 203 17 is_stmt 0 view .LVU204
+ 933 0056 0B1B     		subs	r3, r1, r4
+ 934              		.loc 1 203 10 view .LVU205
+ 935 0058 2B80     		strh	r3, [r5]	@ movhi
+ 204:Core/Src/max30102.c ****     *rdc = (rMax + rMin) / 2;
+ 936              		.loc 1 204 5 is_stmt 1 view .LVU206
+ 937              		.loc 1 204 18 is_stmt 0 view .LVU207
+ 938 005a 2144     		add	r1, r1, r4
+ 939              	.LVL56:
+ 940              		.loc 1 204 26 view .LVU208
+ 941 005c 4908     		lsrs	r1, r1, #1
+ 942              		.loc 1 204 10 view .LVU209
+ 943 005e 3160     		str	r1, [r6]
+ 205:Core/Src/max30102.c ****     *iac = iMax - iMin;
+ 944              		.loc 1 205 5 is_stmt 1 view .LVU210
+ 945              		.loc 1 205 17 is_stmt 0 view .LVU211
+ 946 0060 131A     		subs	r3, r2, r0
+ 947              		.loc 1 205 10 view .LVU212
+ 948 0062 3B80     		strh	r3, [r7]	@ movhi
+ 206:Core/Src/max30102.c ****     *idc = (iMax + iMin) / 2;
+ 949              		.loc 1 206 5 is_stmt 1 view .LVU213
+ 950              		.loc 1 206 18 is_stmt 0 view .LVU214
+ 951 0064 0244     		add	r2, r2, r0
+ 952              	.LVL57:
+ 953              		.loc 1 206 26 view .LVU215
+ 954 0066 5208     		lsrs	r2, r2, #1
+ 955              		.loc 1 206 10 view .LVU216
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 22
+
+
+ 956 0068 C8F80020 		str	r2, [r8]
+ 207:Core/Src/max30102.c **** }
+ 957              		.loc 1 207 1 view .LVU217
+ 958 006c BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 959              	.LVL58:
+ 960              	.L59:
+ 961              		.loc 1 207 1 view .LVU218
+ 962              		.align	2
+ 963              	.L58:
+ 964 0070 00000000 		.word	.LANCHOR0
+ 965              		.cfi_endproc
+ 966              	.LFE73:
+ 968              		.global	__aeabi_ui2f
+ 969              		.global	__aeabi_fdiv
+ 970              		.global	__aeabi_f2d
+ 971              		.global	__aeabi_dcmpge
+ 972              		.global	__aeabi_dcmplt
+ 973              		.global	__aeabi_fmul
+ 974              		.global	__aeabi_fsub
+ 975              		.global	__aeabi_f2uiz
+ 976              		.global	__aeabi_fcmplt
+ 977              		.global	__aeabi_dsub
+ 978              		.global	__aeabi_d2uiz
+ 979              		.global	__aeabi_ddiv
+ 980              		.section	.text.max30102_cal,"ax",%progbits
+ 981              		.align	1
+ 982              		.global	max30102_cal
+ 983              		.syntax unified
+ 984              		.thumb
+ 985              		.thumb_func
+ 987              	max30102_cal:
+ 988              	.LFB74:
+ 208:Core/Src/max30102.c **** 
+ 209:Core/Src/max30102.c **** int16_t eachSampleDiff = 0; //和上一个样本相差了多少
+ 210:Core/Src/max30102.c **** void max30102_cal()
+ 211:Core/Src/max30102.c **** {
+ 989              		.loc 1 211 1 is_stmt 1 view -0
+ 990              		.cfi_startproc
+ 991              		@ args = 0, pretend = 0, frame = 40
+ 992              		@ frame_needed = 0, uses_anonymous_args = 0
+ 993 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 994              	.LCFI23:
+ 995              		.cfi_def_cfa_offset 36
+ 996              		.cfi_offset 4, -36
+ 997              		.cfi_offset 5, -32
+ 998              		.cfi_offset 6, -28
+ 999              		.cfi_offset 7, -24
+ 1000              		.cfi_offset 8, -20
+ 1001              		.cfi_offset 9, -16
+ 1002              		.cfi_offset 10, -12
+ 1003              		.cfi_offset 11, -8
+ 1004              		.cfi_offset 14, -4
+ 1005 0004 8BB0     		sub	sp, sp, #44
+ 1006              	.LCFI24:
+ 1007              		.cfi_def_cfa_offset 80
+ 212:Core/Src/max30102.c ****     uint8_t unreadSampleCount = max30102_getUnreadSampleCount();
+ 1008              		.loc 1 212 5 view .LVU220
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 23
+
+
+ 1009              		.loc 1 212 33 is_stmt 0 view .LVU221
+ 1010 0006 FFF7FEFF 		bl	max30102_getUnreadSampleCount
+ 1011              	.LVL59:
+ 1012 000a 0646     		mov	r6, r0
+ 1013              	.LVL60:
+ 213:Core/Src/max30102.c ****     SAMPLE sampleBuffTemp[5];
+ 1014              		.loc 1 213 5 is_stmt 1 view .LVU222
+ 214:Core/Src/max30102.c ****     max30102_getFIFO(sampleBuffTemp, unreadSampleCount);
+ 1015              		.loc 1 214 5 view .LVU223
+ 1016 000c 0146     		mov	r1, r0
+ 1017 000e 6846     		mov	r0, sp
+ 1018              	.LVL61:
+ 1019              		.loc 1 214 5 is_stmt 0 view .LVU224
+ 1020 0010 FFF7FEFF 		bl	max30102_getFIFO
+ 1021              	.LVL62:
+ 215:Core/Src/max30102.c ****     static uint8_t eachBeatSampleCount = 0;    //这次心跳历经了多少个样本
+ 1022              		.loc 1 215 5 is_stmt 1 view .LVU225
+ 216:Core/Src/max30102.c ****     static uint8_t lastTenBeatSampleCount[10]; //过去十次心跳每一次的样本数
+ 1023              		.loc 1 216 5 view .LVU226
+ 217:Core/Src/max30102.c ****     static uint32_t last_iRed = 0;             //上一次红外的值，过滤后的
+ 1024              		.loc 1 217 5 view .LVU227
+ 218:Core/Src/max30102.c ****     uint8_t i, ii;
+ 1025              		.loc 1 218 5 view .LVU228
+ 219:Core/Src/max30102.c ****     for (i = 0; i < unreadSampleCount; i++)
+ 1026              		.loc 1 219 5 view .LVU229
+ 1027              		.loc 1 219 12 is_stmt 0 view .LVU230
+ 1028 0014 0024     		movs	r4, #0
+ 1029              		.loc 1 219 5 view .LVU231
+ 1030 0016 73E0     		b	.L61
+ 1031              	.LVL63:
+ 1032              	.L62:
+ 1033              	.LBB2:
+ 220:Core/Src/max30102.c ****     {
+ 221:Core/Src/max30102.c ****         if (sampleBuffTemp[i].iRed < 40000) //无手指不计算，跳过
+ 222:Core/Src/max30102.c ****         {
+ 223:Core/Src/max30102.c ****             heartRate = 0;
+ 224:Core/Src/max30102.c ****             spo2 = 0;
+ 225:Core/Src/max30102.c ****             eachSampleDiff = 0;
+ 226:Core/Src/max30102.c ****             continue;
+ 227:Core/Src/max30102.c ****         }
+ 228:Core/Src/max30102.c ****         buffInsert(sampleBuffTemp[i]);
+ 1034              		.loc 1 228 9 is_stmt 1 view .LVU232
+ 1035 0018 E700     		lsls	r7, r4, #3
+ 1036 001a 0AAB     		add	r3, sp, #40
+ 1037 001c 03EBC403 		add	r3, r3, r4, lsl #3
+ 1038 0020 283B     		subs	r3, r3, #40
+ 1039 0022 93E80300 		ldm	r3, {r0, r1}
+ 1040 0026 FFF7FEFF 		bl	buffInsert
+ 1041              	.LVL64:
+ 229:Core/Src/max30102.c ****         calAcDc(&redAC, &redDC, &iRedAC, &iRedDC);
+ 1042              		.loc 1 229 9 view .LVU233
+ 1043 002a DFF8BC91 		ldr	r9, .L84+32
+ 1044 002e DFF8BC81 		ldr	r8, .L84+36
+ 1045 0032 DFF8BCA1 		ldr	r10, .L84+40
+ 1046 0036 DFF8BCB1 		ldr	fp, .L84+44
+ 1047 003a 4B46     		mov	r3, r9
+ 1048 003c 4246     		mov	r2, r8
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 24
+
+
+ 1049 003e 5146     		mov	r1, r10
+ 1050 0040 5846     		mov	r0, fp
+ 1051 0042 FFF7FEFF 		bl	calAcDc
+ 1052              	.LVL65:
+ 230:Core/Src/max30102.c ****         filter(&sampleBuffTemp[i]);
+ 1053              		.loc 1 230 9 view .LVU234
+ 1054 0046 0DEB0700 		add	r0, sp, r7
+ 1055 004a FFF7FEFF 		bl	filter
+ 1056              	.LVL66:
+ 231:Core/Src/max30102.c ****         //计算spo2
+ 232:Core/Src/max30102.c ****         float R = (((float)(redAC)) / ((float)(redDC))) / (((float)(iRedAC)) / ((float)(iRedDC)));
+ 1057              		.loc 1 232 9 view .LVU235
+ 1058              		.loc 1 232 21 is_stmt 0 view .LVU236
+ 1059 004e BBF80000 		ldrh	r0, [fp]
+ 1060 0052 FFF7FEFF 		bl	__aeabi_ui2f
+ 1061              	.LVL67:
+ 1062 0056 0746     		mov	r7, r0
+ 1063              		.loc 1 232 40 view .LVU237
+ 1064 0058 DAF80000 		ldr	r0, [r10]
+ 1065 005c FFF7FEFF 		bl	__aeabi_ui2f
+ 1066              	.LVL68:
+ 1067 0060 0146     		mov	r1, r0
+ 1068              		.loc 1 232 37 view .LVU238
+ 1069 0062 3846     		mov	r0, r7
+ 1070 0064 FFF7FEFF 		bl	__aeabi_fdiv
+ 1071              	.LVL69:
+ 1072 0068 0746     		mov	r7, r0
+ 1073              		.loc 1 232 61 view .LVU239
+ 1074 006a B8F80000 		ldrh	r0, [r8]
+ 1075 006e FFF7FEFF 		bl	__aeabi_ui2f
+ 1076              	.LVL70:
+ 1077 0072 8046     		mov	r8, r0
+ 1078              		.loc 1 232 81 view .LVU240
+ 1079 0074 D9F80000 		ldr	r0, [r9]
+ 1080 0078 FFF7FEFF 		bl	__aeabi_ui2f
+ 1081              	.LVL71:
+ 1082 007c 0146     		mov	r1, r0
+ 1083              		.loc 1 232 78 view .LVU241
+ 1084 007e 4046     		mov	r0, r8
+ 1085 0080 FFF7FEFF 		bl	__aeabi_fdiv
+ 1086              	.LVL72:
+ 1087 0084 0146     		mov	r1, r0
+ 1088              		.loc 1 232 15 view .LVU242
+ 1089 0086 3846     		mov	r0, r7
+ 1090 0088 FFF7FEFF 		bl	__aeabi_fdiv
+ 1091              	.LVL73:
+ 1092 008c 0746     		mov	r7, r0
+ 1093              	.LVL74:
+ 233:Core/Src/max30102.c ****         if (R >= 0.36 && R < 0.66)
+ 1094              		.loc 1 233 9 is_stmt 1 view .LVU243
+ 1095              		.loc 1 233 15 is_stmt 0 view .LVU244
+ 1096 008e FFF7FEFF 		bl	__aeabi_f2d
+ 1097              	.LVL75:
+ 1098              		.loc 1 233 15 view .LVU245
+ 1099 0092 8046     		mov	r8, r0
+ 1100 0094 8946     		mov	r9, r1
+ 1101              		.loc 1 233 12 view .LVU246
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 25
+
+
+ 1102 0096 4CA3     		adr	r3, .L84
+ 1103 0098 D3E90023 		ldrd	r2, [r3]
+ 1104 009c FFF7FEFF 		bl	__aeabi_dcmpge
+ 1105              	.LVL76:
+ 1106 00a0 0028     		cmp	r0, #0
+ 1107 00a2 42D0     		beq	.L64
+ 1108              		.loc 1 233 23 discriminator 1 view .LVU247
+ 1109 00a4 4AA3     		adr	r3, .L84+8
+ 1110 00a6 D3E90023 		ldrd	r2, [r3]
+ 1111 00aa 4046     		mov	r0, r8
+ 1112 00ac 4946     		mov	r1, r9
+ 1113 00ae FFF7FEFF 		bl	__aeabi_dcmplt
+ 1114              	.LVL77:
+ 1115 00b2 0028     		cmp	r0, #0
+ 1116 00b4 39D0     		beq	.L64
+ 234:Core/Src/max30102.c ****             spo2 = (uint8_t)(107 - 20 * R);
+ 1117              		.loc 1 234 13 is_stmt 1 view .LVU248
+ 1118              		.loc 1 234 39 is_stmt 0 view .LVU249
+ 1119 00b6 5049     		ldr	r1, .L84+48
+ 1120 00b8 3846     		mov	r0, r7
+ 1121 00ba FFF7FEFF 		bl	__aeabi_fmul
+ 1122              	.LVL78:
+ 1123 00be 0146     		mov	r1, r0
+ 1124              		.loc 1 234 34 view .LVU250
+ 1125 00c0 4E48     		ldr	r0, .L84+52
+ 1126 00c2 FFF7FEFF 		bl	__aeabi_fsub
+ 1127              	.LVL79:
+ 1128              		.loc 1 234 20 view .LVU251
+ 1129 00c6 FFF7FEFF 		bl	__aeabi_f2uiz
+ 1130              	.LVL80:
+ 1131              		.loc 1 234 18 view .LVU252
+ 1132 00ca 4D4B     		ldr	r3, .L84+56
+ 1133 00cc 1870     		strb	r0, [r3]
+ 1134              	.L67:
+ 235:Core/Src/max30102.c ****         else if (R >= 0.66 && R < 1)
+ 236:Core/Src/max30102.c ****             spo2 = (uint8_t)(129.64 - 54 * R);
+ 237:Core/Src/max30102.c ****         //计算心率,30-250ppm  count:200-12
+ 238:Core/Src/max30102.c ****         eachSampleDiff = last_iRed - sampleBuffTemp[i].iRed;
+ 1135              		.loc 1 238 9 is_stmt 1 view .LVU253
+ 1136              		.loc 1 238 55 is_stmt 0 view .LVU254
+ 1137 00ce 0AAB     		add	r3, sp, #40
+ 1138 00d0 03EBC503 		add	r3, r3, r5, lsl #3
+ 1139 00d4 53F8247C 		ldr	r7, [r3, #-36]
+ 1140              	.LVL81:
+ 1141              		.loc 1 238 36 view .LVU255
+ 1142 00d8 4A4B     		ldr	r3, .L84+60
+ 1143 00da 1B68     		ldr	r3, [r3]
+ 1144 00dc DB1B     		subs	r3, r3, r7
+ 1145 00de 1BB2     		sxth	r3, r3
+ 1146              		.loc 1 238 24 view .LVU256
+ 1147 00e0 494A     		ldr	r2, .L84+64
+ 1148 00e2 1380     		strh	r3, [r2]	@ movhi
+ 239:Core/Src/max30102.c ****         if (eachSampleDiff > 50 && eachBeatSampleCount > 12)
+ 1149              		.loc 1 239 9 is_stmt 1 view .LVU257
+ 1150              		.loc 1 239 12 is_stmt 0 view .LVU258
+ 1151 00e4 322B     		cmp	r3, #50
+ 1152 00e6 03DD     		ble	.L70
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 26
+
+
+ 1153              		.loc 1 239 56 discriminator 1 view .LVU259
+ 1154 00e8 484B     		ldr	r3, .L84+68
+ 1155 00ea 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 1156              		.loc 1 239 33 discriminator 1 view .LVU260
+ 1157 00ec 0C28     		cmp	r0, #12
+ 1158 00ee 4AD8     		bhi	.L82
+ 1159              	.L70:
+ 240:Core/Src/max30102.c ****         {
+ 241:Core/Src/max30102.c ****             for (ii = 9; ii > 0; ii--)
+ 242:Core/Src/max30102.c ****                 lastTenBeatSampleCount[i] = lastTenBeatSampleCount[i - 1];
+ 243:Core/Src/max30102.c ****             lastTenBeatSampleCount[0] = eachBeatSampleCount;
+ 244:Core/Src/max30102.c ****             uint32_t totalTime = 0;
+ 245:Core/Src/max30102.c ****             for (ii = 0; ii < 10; ii++)
+ 246:Core/Src/max30102.c ****                 totalTime += lastTenBeatSampleCount[i];
+ 247:Core/Src/max30102.c ****             heartRate = (uint8_t)(60.0 * 10 / 0.02 / ((float)totalTime));
+ 248:Core/Src/max30102.c ****             eachBeatSampleCount = 0;
+ 249:Core/Src/max30102.c ****         }
+ 250:Core/Src/max30102.c ****         last_iRed = sampleBuffTemp[i].iRed;
+ 1160              		.loc 1 250 9 is_stmt 1 view .LVU261
+ 1161              		.loc 1 250 19 is_stmt 0 view .LVU262
+ 1162 00f0 444B     		ldr	r3, .L84+60
+ 1163 00f2 1F60     		str	r7, [r3]
+ 251:Core/Src/max30102.c ****         eachBeatSampleCount++;
+ 1164              		.loc 1 251 9 is_stmt 1 view .LVU263
+ 1165              		.loc 1 251 28 is_stmt 0 view .LVU264
+ 1166 00f4 454A     		ldr	r2, .L84+68
+ 1167 00f6 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 1168 00f8 0133     		adds	r3, r3, #1
+ 1169 00fa 1370     		strb	r3, [r2]
+ 1170              	.L63:
+ 1171              		.loc 1 251 28 view .LVU265
+ 1172              	.LBE2:
+ 219:Core/Src/max30102.c ****     {
+ 1173              		.loc 1 219 40 is_stmt 1 discriminator 2 view .LVU266
+ 219:Core/Src/max30102.c ****     {
+ 1174              		.loc 1 219 41 is_stmt 0 discriminator 2 view .LVU267
+ 1175 00fc 0134     		adds	r4, r4, #1
+ 1176              	.LVL82:
+ 219:Core/Src/max30102.c ****     {
+ 1177              		.loc 1 219 41 discriminator 2 view .LVU268
+ 1178 00fe E4B2     		uxtb	r4, r4
+ 1179              	.LVL83:
+ 1180              	.L61:
+ 219:Core/Src/max30102.c ****     {
+ 1181              		.loc 1 219 17 is_stmt 1 discriminator 1 view .LVU269
+ 219:Core/Src/max30102.c ****     {
+ 1182              		.loc 1 219 5 is_stmt 0 discriminator 1 view .LVU270
+ 1183 0100 B442     		cmp	r4, r6
+ 1184 0102 5CD2     		bcs	.L83
+ 1185              	.LBB4:
+ 221:Core/Src/max30102.c ****         {
+ 1186              		.loc 1 221 9 is_stmt 1 view .LVU271
+ 221:Core/Src/max30102.c ****         {
+ 1187              		.loc 1 221 30 is_stmt 0 view .LVU272
+ 1188 0104 2546     		mov	r5, r4
+ 1189 0106 0AAB     		add	r3, sp, #40
+ 1190 0108 03EBC403 		add	r3, r3, r4, lsl #3
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 27
+
+
+ 1191 010c 53F8242C 		ldr	r2, [r3, #-36]
+ 221:Core/Src/max30102.c ****         {
+ 1192              		.loc 1 221 12 view .LVU273
+ 1193 0110 49F63F43 		movw	r3, #39999
+ 1194 0114 9A42     		cmp	r2, r3
+ 1195 0116 3FF67FAF 		bhi	.L62
+ 223:Core/Src/max30102.c ****             spo2 = 0;
+ 1196              		.loc 1 223 13 is_stmt 1 view .LVU274
+ 223:Core/Src/max30102.c ****             spo2 = 0;
+ 1197              		.loc 1 223 23 is_stmt 0 view .LVU275
+ 1198 011a 0023     		movs	r3, #0
+ 1199 011c 3C4A     		ldr	r2, .L84+72
+ 1200 011e 1370     		strb	r3, [r2]
+ 224:Core/Src/max30102.c ****             eachSampleDiff = 0;
+ 1201              		.loc 1 224 13 is_stmt 1 view .LVU276
+ 224:Core/Src/max30102.c ****             eachSampleDiff = 0;
+ 1202              		.loc 1 224 18 is_stmt 0 view .LVU277
+ 1203 0120 374A     		ldr	r2, .L84+56
+ 1204 0122 1370     		strb	r3, [r2]
+ 225:Core/Src/max30102.c ****             continue;
+ 1205              		.loc 1 225 13 is_stmt 1 view .LVU278
+ 225:Core/Src/max30102.c ****             continue;
+ 1206              		.loc 1 225 28 is_stmt 0 view .LVU279
+ 1207 0124 384A     		ldr	r2, .L84+64
+ 1208 0126 1380     		strh	r3, [r2]	@ movhi
+ 226:Core/Src/max30102.c ****         }
+ 1209              		.loc 1 226 13 is_stmt 1 view .LVU280
+ 1210 0128 E8E7     		b	.L63
+ 1211              	.LVL84:
+ 1212              	.L64:
+ 235:Core/Src/max30102.c ****             spo2 = (uint8_t)(129.64 - 54 * R);
+ 1213              		.loc 1 235 14 view .LVU281
+ 235:Core/Src/max30102.c ****             spo2 = (uint8_t)(129.64 - 54 * R);
+ 1214              		.loc 1 235 17 is_stmt 0 view .LVU282
+ 1215 012a 29A3     		adr	r3, .L84+8
+ 1216 012c D3E90023 		ldrd	r2, [r3]
+ 1217 0130 4046     		mov	r0, r8
+ 1218 0132 4946     		mov	r1, r9
+ 1219 0134 FFF7FEFF 		bl	__aeabi_dcmpge
+ 1220              	.LVL85:
+ 1221 0138 0028     		cmp	r0, #0
+ 1222 013a C8D0     		beq	.L67
+ 235:Core/Src/max30102.c ****             spo2 = (uint8_t)(129.64 - 54 * R);
+ 1223              		.loc 1 235 28 discriminator 1 view .LVU283
+ 1224 013c 4FF07E51 		mov	r1, #1065353216
+ 1225 0140 3846     		mov	r0, r7
+ 1226 0142 FFF7FEFF 		bl	__aeabi_fcmplt
+ 1227              	.LVL86:
+ 1228 0146 0028     		cmp	r0, #0
+ 1229 0148 C1D0     		beq	.L67
+ 236:Core/Src/max30102.c ****         //计算心率,30-250ppm  count:200-12
+ 1230              		.loc 1 236 13 is_stmt 1 view .LVU284
+ 236:Core/Src/max30102.c ****         //计算心率,30-250ppm  count:200-12
+ 1231              		.loc 1 236 42 is_stmt 0 view .LVU285
+ 1232 014a 3249     		ldr	r1, .L84+76
+ 1233 014c 3846     		mov	r0, r7
+ 1234 014e FFF7FEFF 		bl	__aeabi_fmul
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 28
+
+
+ 1235              	.LVL87:
+ 1236 0152 FFF7FEFF 		bl	__aeabi_f2d
+ 1237              	.LVL88:
+ 1238 0156 0246     		mov	r2, r0
+ 1239 0158 0B46     		mov	r3, r1
+ 236:Core/Src/max30102.c ****         //计算心率,30-250ppm  count:200-12
+ 1240              		.loc 1 236 37 view .LVU286
+ 1241 015a 1FA1     		adr	r1, .L84+16
+ 1242 015c D1E90001 		ldrd	r0, [r1]
+ 1243 0160 FFF7FEFF 		bl	__aeabi_dsub
+ 1244              	.LVL89:
+ 236:Core/Src/max30102.c ****         //计算心率,30-250ppm  count:200-12
+ 1245              		.loc 1 236 20 view .LVU287
+ 1246 0164 FFF7FEFF 		bl	__aeabi_d2uiz
+ 1247              	.LVL90:
+ 236:Core/Src/max30102.c ****         //计算心率,30-250ppm  count:200-12
+ 1248              		.loc 1 236 18 view .LVU288
+ 1249 0168 254B     		ldr	r3, .L84+56
+ 1250 016a 1870     		strb	r0, [r3]
+ 1251 016c AFE7     		b	.L67
+ 1252              	.LVL91:
+ 1253              	.L72:
+ 1254              	.LBB3:
+ 242:Core/Src/max30102.c ****             lastTenBeatSampleCount[0] = eachBeatSampleCount;
+ 1255              		.loc 1 242 17 is_stmt 1 discriminator 3 view .LVU289
+ 242:Core/Src/max30102.c ****             lastTenBeatSampleCount[0] = eachBeatSampleCount;
+ 1256              		.loc 1 242 70 is_stmt 0 discriminator 3 view .LVU290
+ 1257 016e 6A1E     		subs	r2, r5, #1
+ 242:Core/Src/max30102.c ****             lastTenBeatSampleCount[0] = eachBeatSampleCount;
+ 1258              		.loc 1 242 67 discriminator 3 view .LVU291
+ 1259 0170 2949     		ldr	r1, .L84+80
+ 1260 0172 8A5C     		ldrb	r2, [r1, r2]	@ zero_extendqisi2
+ 242:Core/Src/max30102.c ****             lastTenBeatSampleCount[0] = eachBeatSampleCount;
+ 1261              		.loc 1 242 43 discriminator 3 view .LVU292
+ 1262 0174 4A55     		strb	r2, [r1, r5]
+ 241:Core/Src/max30102.c ****                 lastTenBeatSampleCount[i] = lastTenBeatSampleCount[i - 1];
+ 1263              		.loc 1 241 34 is_stmt 1 discriminator 3 view .LVU293
+ 241:Core/Src/max30102.c ****                 lastTenBeatSampleCount[i] = lastTenBeatSampleCount[i - 1];
+ 1264              		.loc 1 241 36 is_stmt 0 discriminator 3 view .LVU294
+ 1265 0176 013B     		subs	r3, r3, #1
+ 1266              	.LVL92:
+ 241:Core/Src/max30102.c ****                 lastTenBeatSampleCount[i] = lastTenBeatSampleCount[i - 1];
+ 1267              		.loc 1 241 36 discriminator 3 view .LVU295
+ 1268 0178 DBB2     		uxtb	r3, r3
+ 1269              	.LVL93:
+ 1270              	.L71:
+ 241:Core/Src/max30102.c ****                 lastTenBeatSampleCount[i] = lastTenBeatSampleCount[i - 1];
+ 1271              		.loc 1 241 26 is_stmt 1 discriminator 1 view .LVU296
+ 241:Core/Src/max30102.c ****                 lastTenBeatSampleCount[i] = lastTenBeatSampleCount[i - 1];
+ 1272              		.loc 1 241 13 is_stmt 0 discriminator 1 view .LVU297
+ 1273 017a 002B     		cmp	r3, #0
+ 1274 017c F7D1     		bne	.L72
+ 243:Core/Src/max30102.c ****             uint32_t totalTime = 0;
+ 1275              		.loc 1 243 13 is_stmt 1 view .LVU298
+ 243:Core/Src/max30102.c ****             uint32_t totalTime = 0;
+ 1276              		.loc 1 243 39 is_stmt 0 view .LVU299
+ 1277 017e 264A     		ldr	r2, .L84+80
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 29
+
+
+ 1278 0180 1070     		strb	r0, [r2]
+ 244:Core/Src/max30102.c ****             for (ii = 0; ii < 10; ii++)
+ 1279              		.loc 1 244 13 is_stmt 1 view .LVU300
+ 1280              	.LVL94:
+ 245:Core/Src/max30102.c ****                 totalTime += lastTenBeatSampleCount[i];
+ 1281              		.loc 1 245 13 view .LVU301
+ 244:Core/Src/max30102.c ****             for (ii = 0; ii < 10; ii++)
+ 1282              		.loc 1 244 22 is_stmt 0 view .LVU302
+ 1283 0182 0020     		movs	r0, #0
+ 245:Core/Src/max30102.c ****                 totalTime += lastTenBeatSampleCount[i];
+ 1284              		.loc 1 245 13 view .LVU303
+ 1285 0184 06E0     		b	.L73
+ 1286              	.LVL95:
+ 1287              	.L82:
+ 241:Core/Src/max30102.c ****                 lastTenBeatSampleCount[i] = lastTenBeatSampleCount[i - 1];
+ 1288              		.loc 1 241 21 view .LVU304
+ 1289 0186 0923     		movs	r3, #9
+ 1290 0188 F7E7     		b	.L71
+ 1291              	.LVL96:
+ 1292              	.L74:
+ 246:Core/Src/max30102.c ****             heartRate = (uint8_t)(60.0 * 10 / 0.02 / ((float)totalTime));
+ 1293              		.loc 1 246 17 is_stmt 1 discriminator 3 view .LVU305
+ 246:Core/Src/max30102.c ****             heartRate = (uint8_t)(60.0 * 10 / 0.02 / ((float)totalTime));
+ 1294              		.loc 1 246 52 is_stmt 0 discriminator 3 view .LVU306
+ 1295 018a 234A     		ldr	r2, .L84+80
+ 1296 018c 525D     		ldrb	r2, [r2, r5]	@ zero_extendqisi2
+ 246:Core/Src/max30102.c ****             heartRate = (uint8_t)(60.0 * 10 / 0.02 / ((float)totalTime));
+ 1297              		.loc 1 246 27 discriminator 3 view .LVU307
+ 1298 018e 1044     		add	r0, r0, r2
+ 1299              	.LVL97:
+ 245:Core/Src/max30102.c ****                 totalTime += lastTenBeatSampleCount[i];
+ 1300              		.loc 1 245 35 is_stmt 1 discriminator 3 view .LVU308
+ 245:Core/Src/max30102.c ****                 totalTime += lastTenBeatSampleCount[i];
+ 1301              		.loc 1 245 37 is_stmt 0 discriminator 3 view .LVU309
+ 1302 0190 0133     		adds	r3, r3, #1
+ 1303              	.LVL98:
+ 245:Core/Src/max30102.c ****                 totalTime += lastTenBeatSampleCount[i];
+ 1304              		.loc 1 245 37 discriminator 3 view .LVU310
+ 1305 0192 DBB2     		uxtb	r3, r3
+ 1306              	.LVL99:
+ 1307              	.L73:
+ 245:Core/Src/max30102.c ****                 totalTime += lastTenBeatSampleCount[i];
+ 1308              		.loc 1 245 26 is_stmt 1 discriminator 1 view .LVU311
+ 245:Core/Src/max30102.c ****                 totalTime += lastTenBeatSampleCount[i];
+ 1309              		.loc 1 245 13 is_stmt 0 discriminator 1 view .LVU312
+ 1310 0194 092B     		cmp	r3, #9
+ 1311 0196 F8D9     		bls	.L74
+ 247:Core/Src/max30102.c ****             eachBeatSampleCount = 0;
+ 1312              		.loc 1 247 13 is_stmt 1 view .LVU313
+ 247:Core/Src/max30102.c ****             eachBeatSampleCount = 0;
+ 1313              		.loc 1 247 55 is_stmt 0 view .LVU314
+ 1314 0198 FFF7FEFF 		bl	__aeabi_ui2f
+ 1315              	.LVL100:
+ 247:Core/Src/max30102.c ****             eachBeatSampleCount = 0;
+ 1316              		.loc 1 247 55 view .LVU315
+ 1317 019c FFF7FEFF 		bl	__aeabi_f2d
+ 1318              	.LVL101:
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 30
+
+
+ 1319 01a0 0246     		mov	r2, r0
+ 1320 01a2 0B46     		mov	r3, r1
+ 247:Core/Src/max30102.c ****             eachBeatSampleCount = 0;
+ 1321              		.loc 1 247 52 view .LVU316
+ 1322 01a4 0EA1     		adr	r1, .L84+24
+ 1323 01a6 D1E90001 		ldrd	r0, [r1]
+ 1324 01aa FFF7FEFF 		bl	__aeabi_ddiv
+ 1325              	.LVL102:
+ 247:Core/Src/max30102.c ****             eachBeatSampleCount = 0;
+ 1326              		.loc 1 247 25 view .LVU317
+ 1327 01ae FFF7FEFF 		bl	__aeabi_d2uiz
+ 1328              	.LVL103:
+ 247:Core/Src/max30102.c ****             eachBeatSampleCount = 0;
+ 1329              		.loc 1 247 23 view .LVU318
+ 1330 01b2 174B     		ldr	r3, .L84+72
+ 1331 01b4 1870     		strb	r0, [r3]
+ 248:Core/Src/max30102.c ****         }
+ 1332              		.loc 1 248 13 is_stmt 1 view .LVU319
+ 248:Core/Src/max30102.c ****         }
+ 1333              		.loc 1 248 33 is_stmt 0 view .LVU320
+ 1334 01b6 154B     		ldr	r3, .L84+68
+ 1335 01b8 0022     		movs	r2, #0
+ 1336 01ba 1A70     		strb	r2, [r3]
+ 1337 01bc 98E7     		b	.L70
+ 1338              	.L83:
+ 248:Core/Src/max30102.c ****         }
+ 1339              		.loc 1 248 33 view .LVU321
+ 1340              	.LBE3:
+ 1341              	.LBE4:
+ 252:Core/Src/max30102.c ****     }
+ 253:Core/Src/max30102.c **** }
+ 1342              		.loc 1 253 1 view .LVU322
+ 1343 01be 0BB0     		add	sp, sp, #44
+ 1344              	.LCFI25:
+ 1345              		.cfi_def_cfa_offset 36
+ 1346              		@ sp needed
+ 1347 01c0 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1348              	.LVL104:
+ 1349              	.L85:
+ 1350              		.loc 1 253 1 view .LVU323
+ 1351 01c4 AFF30080 		.align	3
+ 1352              	.L84:
+ 1353 01c8 0AD7A370 		.word	1889785610
+ 1354 01cc 3D0AD73F 		.word	1071057469
+ 1355 01d0 1F85EB51 		.word	1374389535
+ 1356 01d4 B81EE53F 		.word	1071980216
+ 1357 01d8 14AE47E1 		.word	-515396076
+ 1358 01dc 7A346040 		.word	1080046714
+ 1359 01e0 00000000 		.word	0
+ 1360 01e4 004CDD40 		.word	1088244736
+ 1361 01e8 00000000 		.word	.LANCHOR4
+ 1362 01ec 00000000 		.word	.LANCHOR5
+ 1363 01f0 00000000 		.word	.LANCHOR6
+ 1364 01f4 00000000 		.word	.LANCHOR7
+ 1365 01f8 0000A041 		.word	1101004800
+ 1366 01fc 0000D642 		.word	1121320960
+ 1367 0200 00000000 		.word	.LANCHOR2
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 31
+
+
+ 1368 0204 00000000 		.word	.LANCHOR8
+ 1369 0208 00000000 		.word	.LANCHOR3
+ 1370 020c 00000000 		.word	.LANCHOR9
+ 1371 0210 00000000 		.word	.LANCHOR1
+ 1372 0214 00005842 		.word	1113063424
+ 1373 0218 00000000 		.word	.LANCHOR10
+ 1374              		.cfi_endproc
+ 1375              	.LFE74:
+ 1377              		.section	.text.max30102_getHeartRate,"ax",%progbits
+ 1378              		.align	1
+ 1379              		.global	max30102_getHeartRate
+ 1380              		.syntax unified
+ 1381              		.thumb
+ 1382              		.thumb_func
+ 1384              	max30102_getHeartRate:
+ 1385              	.LFB75:
+ 254:Core/Src/max30102.c **** 
+ 255:Core/Src/max30102.c **** uint8_t max30102_getHeartRate() { return heartRate; }
+ 1386              		.loc 1 255 33 is_stmt 1 view -0
+ 1387              		.cfi_startproc
+ 1388              		@ args = 0, pretend = 0, frame = 0
+ 1389              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1390              		@ link register save eliminated.
+ 1391              		.loc 1 255 35 view .LVU325
+ 1392              		.loc 1 255 53 is_stmt 0 view .LVU326
+ 1393 0000 014B     		ldr	r3, .L87
+ 1394 0002 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 1395 0004 7047     		bx	lr
+ 1396              	.L88:
+ 1397 0006 00BF     		.align	2
+ 1398              	.L87:
+ 1399 0008 00000000 		.word	.LANCHOR1
+ 1400              		.cfi_endproc
+ 1401              	.LFE75:
+ 1403              		.section	.text.max30102_getSpO2,"ax",%progbits
+ 1404              		.align	1
+ 1405              		.global	max30102_getSpO2
+ 1406              		.syntax unified
+ 1407              		.thumb
+ 1408              		.thumb_func
+ 1410              	max30102_getSpO2:
+ 1411              	.LFB76:
+ 256:Core/Src/max30102.c **** uint8_t max30102_getSpO2() { return spo2; }
+ 1412              		.loc 1 256 28 is_stmt 1 view -0
+ 1413              		.cfi_startproc
+ 1414              		@ args = 0, pretend = 0, frame = 0
+ 1415              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1416              		@ link register save eliminated.
+ 1417              		.loc 1 256 30 view .LVU328
+ 1418              		.loc 1 256 43 is_stmt 0 view .LVU329
+ 1419 0000 014B     		ldr	r3, .L90
+ 1420 0002 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 1421 0004 7047     		bx	lr
+ 1422              	.L91:
+ 1423 0006 00BF     		.align	2
+ 1424              	.L90:
+ 1425 0008 00000000 		.word	.LANCHOR2
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 32
+
+
+ 1426              		.cfi_endproc
+ 1427              	.LFE76:
+ 1429              		.section	.text.max30102_getDiff,"ax",%progbits
+ 1430              		.align	1
+ 1431              		.global	max30102_getDiff
+ 1432              		.syntax unified
+ 1433              		.thumb
+ 1434              		.thumb_func
+ 1436              	max30102_getDiff:
+ 1437              	.LFB77:
+ 257:Core/Src/max30102.c **** int16_t max30102_getDiff() { return eachSampleDiff; }...
+ 1438              		.loc 1 257 28 is_stmt 1 view -0
+ 1439              		.cfi_startproc
+ 1440              		@ args = 0, pretend = 0, frame = 0
+ 1441              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1442              		@ link register save eliminated.
+ 1443              		.loc 1 257 30 view .LVU331
+ 1444              		.loc 1 257 53 is_stmt 0 view .LVU332
+ 1445 0000 014B     		ldr	r3, .L93
+ 1446 0002 B3F90000 		ldrsh	r0, [r3]
+ 1447 0006 7047     		bx	lr
+ 1448              	.L94:
+ 1449              		.align	2
+ 1450              	.L93:
+ 1451 0008 00000000 		.word	.LANCHOR3
+ 1452              		.cfi_endproc
+ 1453              	.LFE77:
+ 1455              		.global	eachSampleDiff
+ 1456              		.global	iRedDC
+ 1457              		.global	iRedAC
+ 1458              		.global	redDC
+ 1459              		.global	redAC
+ 1460              		.global	spo2
+ 1461              		.global	heartRate
+ 1462              		.global	sampleBuff
+ 1463              		.section	.bss.eachBeatSampleCount.1,"aw",%nobits
+ 1464              		.set	.LANCHOR9,. + 0
+ 1467              	eachBeatSampleCount.1:
+ 1468 0000 00       		.space	1
+ 1469              		.section	.bss.eachSampleDiff,"aw",%nobits
+ 1470              		.align	1
+ 1471              		.set	.LANCHOR3,. + 0
+ 1474              	eachSampleDiff:
+ 1475 0000 0000     		.space	2
+ 1476              		.section	.bss.heartRate,"aw",%nobits
+ 1477              		.set	.LANCHOR1,. + 0
+ 1480              	heartRate:
+ 1481 0000 00       		.space	1
+ 1482              		.section	.bss.iRedAC,"aw",%nobits
+ 1483              		.align	1
+ 1484              		.set	.LANCHOR5,. + 0
+ 1487              	iRedAC:
+ 1488 0000 0000     		.space	2
+ 1489              		.section	.bss.iRedDC,"aw",%nobits
+ 1490              		.align	2
+ 1491              		.set	.LANCHOR4,. + 0
+ 1494              	iRedDC:
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 33
+
+
+ 1495 0000 00000000 		.space	4
+ 1496              		.section	.bss.lastTenBeatSampleCount.0,"aw",%nobits
+ 1497              		.align	2
+ 1498              		.set	.LANCHOR10,. + 0
+ 1501              	lastTenBeatSampleCount.0:
+ 1502 0000 00000000 		.space	10
+ 1502      00000000 
+ 1502      0000
+ 1503              		.section	.bss.last_iRed.2,"aw",%nobits
+ 1504              		.align	2
+ 1505              		.set	.LANCHOR8,. + 0
+ 1508              	last_iRed.2:
+ 1509 0000 00000000 		.space	4
+ 1510              		.section	.bss.redAC,"aw",%nobits
+ 1511              		.align	1
+ 1512              		.set	.LANCHOR7,. + 0
+ 1515              	redAC:
+ 1516 0000 0000     		.space	2
+ 1517              		.section	.bss.redDC,"aw",%nobits
+ 1518              		.align	2
+ 1519              		.set	.LANCHOR6,. + 0
+ 1522              	redDC:
+ 1523 0000 00000000 		.space	4
+ 1524              		.section	.bss.sampleBuff,"aw",%nobits
+ 1525              		.align	2
+ 1526              		.set	.LANCHOR0,. + 0
+ 1529              	sampleBuff:
+ 1530 0000 00000000 		.space	400
+ 1530      00000000 
+ 1530      00000000 
+ 1530      00000000 
+ 1530      00000000 
+ 1531              		.section	.bss.spo2,"aw",%nobits
+ 1532              		.set	.LANCHOR2,. + 0
+ 1535              	spo2:
+ 1536 0000 00       		.space	1
+ 1537              		.text
+ 1538              	.Letext0:
+ 1539              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 1540              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 1541              		.file 4 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h"
+ 1542              		.file 5 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 1543              		.file 6 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h"
+ 1544              		.file 7 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h"
+ 1545              		.file 8 "Core/Inc/max30102.h"
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 34
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 max30102.c
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:18     .text.max30102_getUnreadSampleCount:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:24     .text.max30102_getUnreadSampleCount:00000000 max30102_getUnreadSampleCount
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:105    .text.max30102_getUnreadSampleCount:00000060 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:110    .text.max30102_getFIFO:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:116    .text.max30102_getFIFO:00000000 max30102_getFIFO
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:243    .text.max30102_getFIFO:000000a4 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:248    .text.max30102_getStatus:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:254    .text.max30102_getStatus:00000000 max30102_getStatus
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:319    .text.max30102_getStatus:0000004c $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:324    .text.max30102_init:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:330    .text.max30102_init:00000000 max30102_init
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:513    .text.max30102_init:0000011c $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:518    .text.max30102_OFF:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:524    .text.max30102_OFF:00000000 max30102_OFF
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:583    .text.max30102_OFF:00000048 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:588    .text.max30102_ON:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:594    .text.max30102_ON:00000000 max30102_ON
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:653    .text.max30102_ON:00000048 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:658    .text.filter:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:664    .text.filter:00000000 filter
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:741    .text.filter:00000038 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:746    .text.buffInsert:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:752    .text.buffInsert:00000000 buffInsert
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:818    .text.buffInsert:00000038 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:823    .text.calAcDc:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:829    .text.calAcDc:00000000 calAcDc
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:964    .text.calAcDc:00000070 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:981    .text.max30102_cal:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:987    .text.max30102_cal:00000000 max30102_cal
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1353   .text.max30102_cal:000001c8 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1378   .text.max30102_getHeartRate:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1384   .text.max30102_getHeartRate:00000000 max30102_getHeartRate
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1399   .text.max30102_getHeartRate:00000008 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1404   .text.max30102_getSpO2:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1410   .text.max30102_getSpO2:00000000 max30102_getSpO2
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1425   .text.max30102_getSpO2:00000008 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1430   .text.max30102_getDiff:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1436   .text.max30102_getDiff:00000000 max30102_getDiff
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1451   .text.max30102_getDiff:00000008 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1474   .bss.eachSampleDiff:00000000 eachSampleDiff
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1494   .bss.iRedDC:00000000 iRedDC
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1487   .bss.iRedAC:00000000 iRedAC
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1522   .bss.redDC:00000000 redDC
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1515   .bss.redAC:00000000 redAC
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1535   .bss.spo2:00000000 spo2
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1480   .bss.heartRate:00000000 heartRate
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1529   .bss.sampleBuff:00000000 sampleBuff
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1467   .bss.eachBeatSampleCount.1:00000000 eachBeatSampleCount.1
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1468   .bss.eachBeatSampleCount.1:00000000 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1470   .bss.eachSampleDiff:00000000 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1481   .bss.heartRate:00000000 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1483   .bss.iRedAC:00000000 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1490   .bss.iRedDC:00000000 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1497   .bss.lastTenBeatSampleCount.0:00000000 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1501   .bss.lastTenBeatSampleCount.0:00000000 lastTenBeatSampleCount.0
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s 			page 35
+
+
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1504   .bss.last_iRed.2:00000000 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1508   .bss.last_iRed.2:00000000 last_iRed.2
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1511   .bss.redAC:00000000 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1518   .bss.redDC:00000000 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1525   .bss.sampleBuff:00000000 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccLRSgPX.s:1536   .bss.spo2:00000000 $d
+
+UNDEFINED SYMBOLS
+HAL_I2C_Mem_Read
+hi2c2
+HAL_I2C_Mem_Write
+__aeabi_ui2f
+__aeabi_fdiv
+__aeabi_f2d
+__aeabi_dcmpge
+__aeabi_dcmplt
+__aeabi_fmul
+__aeabi_fsub
+__aeabi_f2uiz
+__aeabi_fcmplt
+__aeabi_dsub
+__aeabi_d2uiz
+__aeabi_ddiv

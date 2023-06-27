@@ -1,0 +1,836 @@
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"helperFunc.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.reverse,"ax",%progbits
+  18              		.align	1
+  19              		.global	reverse
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	reverse:
+  25              	.LVL0:
+  26              	.LFB65:
+  27              		.file 1 "Core/Src/helperFunc.c"
+   1:Core/Src/helperFunc.c **** #include "helperFunc.h"
+   2:Core/Src/helperFunc.c **** #include "math.h"
+   3:Core/Src/helperFunc.c **** #include "stm32f1xx_hal.h"
+   4:Core/Src/helperFunc.c **** 
+   5:Core/Src/helperFunc.c **** //-------------------------------------------------------------------------
+   6:Core/Src/helperFunc.c **** 
+   7:Core/Src/helperFunc.c **** 
+   8:Core/Src/helperFunc.c **** void reverse(char* str, int len)
+   9:Core/Src/helperFunc.c **** {
+  28              		.loc 1 9 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  10:Core/Src/helperFunc.c ****     int i = 0, j = len - 1, temp;
+  33              		.loc 1 10 5 view .LVU1
+  34              		.loc 1 10 16 is_stmt 0 view .LVU2
+  35 0000 0139     		subs	r1, r1, #1
+  36              	.LVL1:
+  11:Core/Src/helperFunc.c ****     while (i < j)
+  37              		.loc 1 11 5 is_stmt 1 view .LVU3
+  10:Core/Src/helperFunc.c ****     int i = 0, j = len - 1, temp;
+  38              		.loc 1 10 9 is_stmt 0 view .LVU4
+  39 0002 0023     		movs	r3, #0
+  40              		.loc 1 11 11 view .LVU5
+  41 0004 07E0     		b	.L2
+  42              	.LVL2:
+  43              	.L3:
+  12:Core/Src/helperFunc.c ****     {
+  13:Core/Src/helperFunc.c ****         temp = str[i];
+  44              		.loc 1 13 9 is_stmt 1 view .LVU6
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s 			page 2
+
+
+  45              		.loc 1 13 19 is_stmt 0 view .LVU7
+  46 0006 C25C     		ldrb	r2, [r0, r3]	@ zero_extendqisi2
+  47              	.LVL3:
+  14:Core/Src/helperFunc.c ****         str[i] = str[j];
+  48              		.loc 1 14 9 is_stmt 1 view .LVU8
+  49              		.loc 1 14 21 is_stmt 0 view .LVU9
+  50 0008 10F801C0 		ldrb	ip, [r0, r1]	@ zero_extendqisi2
+  51              		.loc 1 14 16 view .LVU10
+  52 000c 00F803C0 		strb	ip, [r0, r3]
+  15:Core/Src/helperFunc.c ****         str[j] = temp;
+  53              		.loc 1 15 9 is_stmt 1 view .LVU11
+  54              		.loc 1 15 16 is_stmt 0 view .LVU12
+  55 0010 4254     		strb	r2, [r0, r1]
+  16:Core/Src/helperFunc.c ****         i++;
+  56              		.loc 1 16 9 is_stmt 1 view .LVU13
+  57              		.loc 1 16 10 is_stmt 0 view .LVU14
+  58 0012 0133     		adds	r3, r3, #1
+  59              	.LVL4:
+  17:Core/Src/helperFunc.c ****         j--;
+  60              		.loc 1 17 9 is_stmt 1 view .LVU15
+  61              		.loc 1 17 10 is_stmt 0 view .LVU16
+  62 0014 0139     		subs	r1, r1, #1
+  63              	.LVL5:
+  64              	.L2:
+  11:Core/Src/helperFunc.c ****     {
+  65              		.loc 1 11 11 is_stmt 1 view .LVU17
+  66 0016 8B42     		cmp	r3, r1
+  67 0018 F5DB     		blt	.L3
+  18:Core/Src/helperFunc.c ****     }
+  19:Core/Src/helperFunc.c **** }
+  68              		.loc 1 19 1 is_stmt 0 view .LVU18
+  69 001a 7047     		bx	lr
+  70              		.cfi_endproc
+  71              	.LFE65:
+  73              		.section	.text.intToStr,"ax",%progbits
+  74              		.align	1
+  75              		.global	intToStr
+  76              		.syntax unified
+  77              		.thumb
+  78              		.thumb_func
+  80              	intToStr:
+  81              	.LVL6:
+  82              	.LFB66:
+  20:Core/Src/helperFunc.c **** 
+  21:Core/Src/helperFunc.c **** 
+  22:Core/Src/helperFunc.c **** int intToStr(int x, char str[], int d)
+  23:Core/Src/helperFunc.c **** {
+  83              		.loc 1 23 1 is_stmt 1 view -0
+  84              		.cfi_startproc
+  85              		@ args = 0, pretend = 0, frame = 0
+  86              		@ frame_needed = 0, uses_anonymous_args = 0
+  87              		.loc 1 23 1 is_stmt 0 view .LVU20
+  88 0000 70B5     		push	{r4, r5, r6, lr}
+  89              	.LCFI0:
+  90              		.cfi_def_cfa_offset 16
+  91              		.cfi_offset 4, -16
+  92              		.cfi_offset 5, -12
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s 			page 3
+
+
+  93              		.cfi_offset 6, -8
+  94              		.cfi_offset 14, -4
+  95 0002 0E46     		mov	r6, r1
+  24:Core/Src/helperFunc.c ****     int i = 0;
+  96              		.loc 1 24 5 is_stmt 1 view .LVU21
+  97              	.LVL7:
+  25:Core/Src/helperFunc.c ****     if (x == 0)
+  98              		.loc 1 25 5 view .LVU22
+  99              		.loc 1 25 8 is_stmt 0 view .LVU23
+ 100 0004 18B9     		cbnz	r0, .L10
+  26:Core/Src/helperFunc.c ****     {
+  27:Core/Src/helperFunc.c ****         str[i++] = '0';
+ 101              		.loc 1 27 9 is_stmt 1 view .LVU24
+ 102              	.LVL8:
+ 103              		.loc 1 27 18 is_stmt 0 view .LVU25
+ 104 0006 3023     		movs	r3, #48
+ 105 0008 0B70     		strb	r3, [r1]
+ 106              		.loc 1 27 14 view .LVU26
+ 107 000a 0124     		movs	r4, #1
+ 108 000c 15E0     		b	.L6
+ 109              	.LVL9:
+ 110              	.L10:
+ 111              		.loc 1 27 14 view .LVU27
+ 112 000e 0546     		mov	r5, r0
+  24:Core/Src/helperFunc.c ****     if (x == 0)
+ 113              		.loc 1 24 9 view .LVU28
+ 114 0010 0024     		movs	r4, #0
+ 115              	.LVL10:
+ 116              	.L5:
+  28:Core/Src/helperFunc.c ****     }
+  29:Core/Src/helperFunc.c ****     else
+  30:Core/Src/helperFunc.c ****     {
+  31:Core/Src/helperFunc.c ****         while (x)
+ 117              		.loc 1 31 15 is_stmt 1 view .LVU29
+ 118 0012 95B1     		cbz	r5, .L6
+  32:Core/Src/helperFunc.c ****         {
+  33:Core/Src/helperFunc.c ****             str[i++] = (x % 10) + '0';
+ 119              		.loc 1 33 13 view .LVU30
+ 120              		.loc 1 33 27 is_stmt 0 view .LVU31
+ 121 0014 0E49     		ldr	r1, .L12
+ 122 0016 81FB0531 		smull	r3, r1, r1, r5
+ 123 001a EB17     		asrs	r3, r5, #31
+ 124 001c C3EBA103 		rsb	r3, r3, r1, asr #2
+ 125 0020 1946     		mov	r1, r3
+ 126 0022 03EB8303 		add	r3, r3, r3, lsl #2
+ 127 0026 A5EB4303 		sub	r3, r5, r3, lsl #1
+ 128              	.LVL11:
+ 129              		.loc 1 33 33 view .LVU32
+ 130 002a 3033     		adds	r3, r3, #48
+ 131              		.loc 1 33 22 view .LVU33
+ 132 002c 3355     		strb	r3, [r6, r4]
+  34:Core/Src/helperFunc.c ****             x = x / 10;
+ 133              		.loc 1 34 13 is_stmt 1 view .LVU34
+ 134              		.loc 1 34 15 is_stmt 0 view .LVU35
+ 135 002e 0D46     		mov	r5, r1
+ 136              	.LVL12:
+  33:Core/Src/helperFunc.c ****             x = x / 10;
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s 			page 4
+
+
+ 137              		.loc 1 33 18 view .LVU36
+ 138 0030 0134     		adds	r4, r4, #1
+ 139              	.LVL13:
+  33:Core/Src/helperFunc.c ****             x = x / 10;
+ 140              		.loc 1 33 18 view .LVU37
+ 141 0032 EEE7     		b	.L5
+ 142              	.LVL14:
+ 143              	.L9:
+  35:Core/Src/helperFunc.c ****         }
+  36:Core/Src/helperFunc.c ****     }
+  37:Core/Src/helperFunc.c ****     
+  38:Core/Src/helperFunc.c ****     // If number of digits required is more, then
+  39:Core/Src/helperFunc.c ****     // add space at the beginning
+  40:Core/Src/helperFunc.c ****     while (i < d)
+  41:Core/Src/helperFunc.c ****         str[i++] = ' ';
+ 144              		.loc 1 41 9 is_stmt 1 view .LVU38
+ 145              		.loc 1 41 18 is_stmt 0 view .LVU39
+ 146 0034 2023     		movs	r3, #32
+ 147 0036 3355     		strb	r3, [r6, r4]
+ 148              		.loc 1 41 14 view .LVU40
+ 149 0038 0134     		adds	r4, r4, #1
+ 150              	.LVL15:
+ 151              	.L6:
+  40:Core/Src/helperFunc.c ****         str[i++] = ' ';
+ 152              		.loc 1 40 11 is_stmt 1 view .LVU41
+ 153 003a 9442     		cmp	r4, r2
+ 154 003c FADB     		blt	.L9
+  42:Core/Src/helperFunc.c **** 
+  43:Core/Src/helperFunc.c ****     reverse(str, i);
+ 155              		.loc 1 43 5 view .LVU42
+ 156 003e 2146     		mov	r1, r4
+ 157 0040 3046     		mov	r0, r6
+ 158 0042 FFF7FEFF 		bl	reverse
+ 159              	.LVL16:
+  44:Core/Src/helperFunc.c ****     str[i] = '\0';
+ 160              		.loc 1 44 5 view .LVU43
+ 161              		.loc 1 44 12 is_stmt 0 view .LVU44
+ 162 0046 0023     		movs	r3, #0
+ 163 0048 3355     		strb	r3, [r6, r4]
+  45:Core/Src/helperFunc.c ****     return i;
+ 164              		.loc 1 45 5 is_stmt 1 view .LVU45
+  46:Core/Src/helperFunc.c **** }
+ 165              		.loc 1 46 1 is_stmt 0 view .LVU46
+ 166 004a 2046     		mov	r0, r4
+ 167 004c 70BD     		pop	{r4, r5, r6, pc}
+ 168              	.LVL17:
+ 169              	.L13:
+ 170              		.loc 1 46 1 view .LVU47
+ 171 004e 00BF     		.align	2
+ 172              	.L12:
+ 173 0050 67666666 		.word	1717986919
+ 174              		.cfi_endproc
+ 175              	.LFE66:
+ 177              		.global	__aeabi_f2iz
+ 178              		.global	__aeabi_i2f
+ 179              		.global	__aeabi_fsub
+ 180              		.global	__aeabi_i2d
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s 			page 5
+
+
+ 181              		.global	__aeabi_f2d
+ 182              		.global	__aeabi_dmul
+ 183              		.global	__aeabi_d2f
+ 184              		.section	.text.ftoa,"ax",%progbits
+ 185              		.align	1
+ 186              		.global	ftoa
+ 187              		.syntax unified
+ 188              		.thumb
+ 189              		.thumb_func
+ 191              	ftoa:
+ 192              	.LVL18:
+ 193              	.LFB67:
+  47:Core/Src/helperFunc.c **** 
+  48:Core/Src/helperFunc.c **** 
+  49:Core/Src/helperFunc.c **** void ftoa(float n, char* res, int afterpoint)
+  50:Core/Src/helperFunc.c **** {
+ 194              		.loc 1 50 1 is_stmt 1 view -0
+ 195              		.cfi_startproc
+ 196              		@ args = 0, pretend = 0, frame = 0
+ 197              		@ frame_needed = 0, uses_anonymous_args = 0
+ 198              		.loc 1 50 1 is_stmt 0 view .LVU49
+ 199 0000 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+ 200              	.LCFI1:
+ 201              		.cfi_def_cfa_offset 32
+ 202              		.cfi_offset 3, -32
+ 203              		.cfi_offset 4, -28
+ 204              		.cfi_offset 5, -24
+ 205              		.cfi_offset 6, -20
+ 206              		.cfi_offset 7, -16
+ 207              		.cfi_offset 8, -12
+ 208              		.cfi_offset 9, -8
+ 209              		.cfi_offset 14, -4
+ 210 0004 0646     		mov	r6, r0
+ 211 0006 0C46     		mov	r4, r1
+ 212 0008 1746     		mov	r7, r2
+  51:Core/Src/helperFunc.c ****     // Extract integer part
+  52:Core/Src/helperFunc.c ****     int ipart = (int)n;
+ 213              		.loc 1 52 5 is_stmt 1 view .LVU50
+ 214              		.loc 1 52 9 is_stmt 0 view .LVU51
+ 215 000a FFF7FEFF 		bl	__aeabi_f2iz
+ 216              	.LVL19:
+ 217              		.loc 1 52 9 view .LVU52
+ 218 000e 0546     		mov	r5, r0
+ 219              	.LVL20:
+  53:Core/Src/helperFunc.c ****     // Extract floating part
+  54:Core/Src/helperFunc.c ****     float fpart = n - (float)ipart;
+ 220              		.loc 1 54 5 is_stmt 1 view .LVU53
+ 221              		.loc 1 54 23 is_stmt 0 view .LVU54
+ 222 0010 FFF7FEFF 		bl	__aeabi_i2f
+ 223              	.LVL21:
+ 224              		.loc 1 54 23 view .LVU55
+ 225 0014 0146     		mov	r1, r0
+ 226              		.loc 1 54 11 view .LVU56
+ 227 0016 3046     		mov	r0, r6
+ 228 0018 FFF7FEFF 		bl	__aeabi_fsub
+ 229              	.LVL22:
+ 230 001c 0646     		mov	r6, r0
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s 			page 6
+
+
+ 231              	.LVL23:
+  55:Core/Src/helperFunc.c ****     // convert integer part to string
+  56:Core/Src/helperFunc.c ****     int i = intToStr(ipart, res, 0);
+ 232              		.loc 1 56 5 is_stmt 1 view .LVU57
+ 233              		.loc 1 56 13 is_stmt 0 view .LVU58
+ 234 001e 0022     		movs	r2, #0
+ 235 0020 2146     		mov	r1, r4
+ 236 0022 2846     		mov	r0, r5
+ 237              	.LVL24:
+ 238              		.loc 1 56 13 view .LVU59
+ 239 0024 FFF7FEFF 		bl	intToStr
+ 240              	.LVL25:
+  57:Core/Src/helperFunc.c ****     // check for display option after point
+  58:Core/Src/helperFunc.c ****     if (afterpoint != 0)
+ 241              		.loc 1 58 5 is_stmt 1 view .LVU60
+ 242              		.loc 1 58 8 is_stmt 0 view .LVU61
+ 243 0028 0FB9     		cbnz	r7, .L17
+ 244              	.LVL26:
+ 245              	.L14:
+  59:Core/Src/helperFunc.c ****     {
+  60:Core/Src/helperFunc.c ****         res[i] = '.'; // add dot
+  61:Core/Src/helperFunc.c ****         fpart = fpart * pow(10, afterpoint);
+  62:Core/Src/helperFunc.c ****         intToStr((int)fpart, res + i + 1, afterpoint);
+  63:Core/Src/helperFunc.c ****     }
+  64:Core/Src/helperFunc.c **** }
+ 246              		.loc 1 64 1 view .LVU62
+ 247 002a BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+ 248              	.LVL27:
+ 249              	.L17:
+ 250              		.loc 1 64 1 view .LVU63
+ 251 002e 0546     		mov	r5, r0
+ 252              	.LVL28:
+  60:Core/Src/helperFunc.c ****         fpart = fpart * pow(10, afterpoint);
+ 253              		.loc 1 60 9 is_stmt 1 view .LVU64
+  60:Core/Src/helperFunc.c ****         fpart = fpart * pow(10, afterpoint);
+ 254              		.loc 1 60 16 is_stmt 0 view .LVU65
+ 255 0030 2E23     		movs	r3, #46
+ 256 0032 2354     		strb	r3, [r4, r0]
+  61:Core/Src/helperFunc.c ****         intToStr((int)fpart, res + i + 1, afterpoint);
+ 257              		.loc 1 61 9 is_stmt 1 view .LVU66
+  61:Core/Src/helperFunc.c ****         intToStr((int)fpart, res + i + 1, afterpoint);
+ 258              		.loc 1 61 25 is_stmt 0 view .LVU67
+ 259 0034 3846     		mov	r0, r7
+ 260              	.LVL29:
+  61:Core/Src/helperFunc.c ****         intToStr((int)fpart, res + i + 1, afterpoint);
+ 261              		.loc 1 61 25 view .LVU68
+ 262 0036 FFF7FEFF 		bl	__aeabi_i2d
+ 263              	.LVL30:
+ 264 003a 0246     		mov	r2, r0
+ 265 003c 0B46     		mov	r3, r1
+ 266 003e 0020     		movs	r0, #0
+ 267 0040 0B49     		ldr	r1, .L18
+ 268 0042 FFF7FEFF 		bl	pow
+ 269              	.LVL31:
+ 270 0046 8046     		mov	r8, r0
+ 271 0048 8946     		mov	r9, r1
+  61:Core/Src/helperFunc.c ****         intToStr((int)fpart, res + i + 1, afterpoint);
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s 			page 7
+
+
+ 272              		.loc 1 61 23 view .LVU69
+ 273 004a 3046     		mov	r0, r6
+ 274 004c FFF7FEFF 		bl	__aeabi_f2d
+ 275              	.LVL32:
+ 276 0050 4246     		mov	r2, r8
+ 277 0052 4B46     		mov	r3, r9
+ 278 0054 FFF7FEFF 		bl	__aeabi_dmul
+ 279              	.LVL33:
+  61:Core/Src/helperFunc.c ****         intToStr((int)fpart, res + i + 1, afterpoint);
+ 280              		.loc 1 61 15 view .LVU70
+ 281 0058 FFF7FEFF 		bl	__aeabi_d2f
+ 282              	.LVL34:
+  62:Core/Src/helperFunc.c ****     }
+ 283              		.loc 1 62 9 is_stmt 1 view .LVU71
+  62:Core/Src/helperFunc.c ****     }
+ 284              		.loc 1 62 38 is_stmt 0 view .LVU72
+ 285 005c 691C     		adds	r1, r5, #1
+  62:Core/Src/helperFunc.c ****     }
+ 286              		.loc 1 62 9 view .LVU73
+ 287 005e 0C44     		add	r4, r4, r1
+ 288              	.LVL35:
+  62:Core/Src/helperFunc.c ****     }
+ 289              		.loc 1 62 9 view .LVU74
+ 290 0060 FFF7FEFF 		bl	__aeabi_f2iz
+ 291              	.LVL36:
+  62:Core/Src/helperFunc.c ****     }
+ 292              		.loc 1 62 9 view .LVU75
+ 293 0064 3A46     		mov	r2, r7
+ 294 0066 2146     		mov	r1, r4
+ 295 0068 FFF7FEFF 		bl	intToStr
+ 296              	.LVL37:
+ 297              		.loc 1 64 1 view .LVU76
+ 298 006c DDE7     		b	.L14
+ 299              	.L19:
+ 300 006e 00BF     		.align	2
+ 301              	.L18:
+ 302 0070 00002440 		.word	1076101120
+ 303              		.cfi_endproc
+ 304              	.LFE67:
+ 306              		.section	.text.intToStr0,"ax",%progbits
+ 307              		.align	1
+ 308              		.global	intToStr0
+ 309              		.syntax unified
+ 310              		.thumb
+ 311              		.thumb_func
+ 313              	intToStr0:
+ 314              	.LVL38:
+ 315              	.LFB68:
+  65:Core/Src/helperFunc.c **** 
+  66:Core/Src/helperFunc.c **** int intToStr0(int x, char str[], int d)
+  67:Core/Src/helperFunc.c **** {
+ 316              		.loc 1 67 1 is_stmt 1 view -0
+ 317              		.cfi_startproc
+ 318              		@ args = 0, pretend = 0, frame = 0
+ 319              		@ frame_needed = 0, uses_anonymous_args = 0
+ 320              		.loc 1 67 1 is_stmt 0 view .LVU78
+ 321 0000 70B5     		push	{r4, r5, r6, lr}
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s 			page 8
+
+
+ 322              	.LCFI2:
+ 323              		.cfi_def_cfa_offset 16
+ 324              		.cfi_offset 4, -16
+ 325              		.cfi_offset 5, -12
+ 326              		.cfi_offset 6, -8
+ 327              		.cfi_offset 14, -4
+ 328 0002 0E46     		mov	r6, r1
+  68:Core/Src/helperFunc.c ****     int i = 0;
+ 329              		.loc 1 68 5 is_stmt 1 view .LVU79
+ 330              	.LVL39:
+  69:Core/Src/helperFunc.c ****     if (x == 0)
+ 331              		.loc 1 69 5 view .LVU80
+ 332              		.loc 1 69 8 is_stmt 0 view .LVU81
+ 333 0004 18B9     		cbnz	r0, .L26
+  70:Core/Src/helperFunc.c ****     {
+  71:Core/Src/helperFunc.c ****         str[i++] = '0';
+ 334              		.loc 1 71 9 is_stmt 1 view .LVU82
+ 335              	.LVL40:
+ 336              		.loc 1 71 18 is_stmt 0 view .LVU83
+ 337 0006 3023     		movs	r3, #48
+ 338 0008 0B70     		strb	r3, [r1]
+ 339              		.loc 1 71 14 view .LVU84
+ 340 000a 0124     		movs	r4, #1
+ 341 000c 15E0     		b	.L22
+ 342              	.LVL41:
+ 343              	.L26:
+ 344              		.loc 1 71 14 view .LVU85
+ 345 000e 0546     		mov	r5, r0
+  68:Core/Src/helperFunc.c ****     if (x == 0)
+ 346              		.loc 1 68 9 view .LVU86
+ 347 0010 0024     		movs	r4, #0
+ 348              	.LVL42:
+ 349              	.L21:
+  72:Core/Src/helperFunc.c ****     }
+  73:Core/Src/helperFunc.c ****     else
+  74:Core/Src/helperFunc.c ****     {
+  75:Core/Src/helperFunc.c ****         while (x)
+ 350              		.loc 1 75 15 is_stmt 1 view .LVU87
+ 351 0012 95B1     		cbz	r5, .L22
+  76:Core/Src/helperFunc.c ****         {
+  77:Core/Src/helperFunc.c ****             str[i++] = (x % 10) + '0';
+ 352              		.loc 1 77 13 view .LVU88
+ 353              		.loc 1 77 27 is_stmt 0 view .LVU89
+ 354 0014 0E49     		ldr	r1, .L28
+ 355 0016 81FB0531 		smull	r3, r1, r1, r5
+ 356 001a EB17     		asrs	r3, r5, #31
+ 357 001c C3EBA103 		rsb	r3, r3, r1, asr #2
+ 358 0020 1946     		mov	r1, r3
+ 359 0022 03EB8303 		add	r3, r3, r3, lsl #2
+ 360 0026 A5EB4303 		sub	r3, r5, r3, lsl #1
+ 361              	.LVL43:
+ 362              		.loc 1 77 33 view .LVU90
+ 363 002a 3033     		adds	r3, r3, #48
+ 364              		.loc 1 77 22 view .LVU91
+ 365 002c 3355     		strb	r3, [r6, r4]
+  78:Core/Src/helperFunc.c ****             x = x / 10;
+ 366              		.loc 1 78 13 is_stmt 1 view .LVU92
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s 			page 9
+
+
+ 367              		.loc 1 78 15 is_stmt 0 view .LVU93
+ 368 002e 0D46     		mov	r5, r1
+ 369              	.LVL44:
+  77:Core/Src/helperFunc.c ****             x = x / 10;
+ 370              		.loc 1 77 18 view .LVU94
+ 371 0030 0134     		adds	r4, r4, #1
+ 372              	.LVL45:
+  77:Core/Src/helperFunc.c ****             x = x / 10;
+ 373              		.loc 1 77 18 view .LVU95
+ 374 0032 EEE7     		b	.L21
+ 375              	.LVL46:
+ 376              	.L25:
+  79:Core/Src/helperFunc.c ****         }
+  80:Core/Src/helperFunc.c ****     }
+  81:Core/Src/helperFunc.c ****     
+  82:Core/Src/helperFunc.c ****     // If number of digits required is more, then
+  83:Core/Src/helperFunc.c ****     // add 0s at the beginning
+  84:Core/Src/helperFunc.c ****     while (i < d)
+  85:Core/Src/helperFunc.c ****         str[i++] = '0';
+ 377              		.loc 1 85 9 is_stmt 1 view .LVU96
+ 378              		.loc 1 85 18 is_stmt 0 view .LVU97
+ 379 0034 3023     		movs	r3, #48
+ 380 0036 3355     		strb	r3, [r6, r4]
+ 381              		.loc 1 85 14 view .LVU98
+ 382 0038 0134     		adds	r4, r4, #1
+ 383              	.LVL47:
+ 384              	.L22:
+  84:Core/Src/helperFunc.c ****         str[i++] = '0';
+ 385              		.loc 1 84 11 is_stmt 1 view .LVU99
+ 386 003a 9442     		cmp	r4, r2
+ 387 003c FADB     		blt	.L25
+  86:Core/Src/helperFunc.c **** 
+  87:Core/Src/helperFunc.c ****     reverse(str, i);
+ 388              		.loc 1 87 5 view .LVU100
+ 389 003e 2146     		mov	r1, r4
+ 390 0040 3046     		mov	r0, r6
+ 391 0042 FFF7FEFF 		bl	reverse
+ 392              	.LVL48:
+  88:Core/Src/helperFunc.c ****     str[i] = '\0';
+ 393              		.loc 1 88 5 view .LVU101
+ 394              		.loc 1 88 12 is_stmt 0 view .LVU102
+ 395 0046 0023     		movs	r3, #0
+ 396 0048 3355     		strb	r3, [r6, r4]
+  89:Core/Src/helperFunc.c ****     return i;
+ 397              		.loc 1 89 5 is_stmt 1 view .LVU103
+  90:Core/Src/helperFunc.c **** }
+ 398              		.loc 1 90 1 is_stmt 0 view .LVU104
+ 399 004a 2046     		mov	r0, r4
+ 400 004c 70BD     		pop	{r4, r5, r6, pc}
+ 401              	.LVL49:
+ 402              	.L29:
+ 403              		.loc 1 90 1 view .LVU105
+ 404 004e 00BF     		.align	2
+ 405              	.L28:
+ 406 0050 67666666 		.word	1717986919
+ 407              		.cfi_endproc
+ 408              	.LFE68:
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s 			page 10
+
+
+ 410              		.section	.text.ftoa0,"ax",%progbits
+ 411              		.align	1
+ 412              		.global	ftoa0
+ 413              		.syntax unified
+ 414              		.thumb
+ 415              		.thumb_func
+ 417              	ftoa0:
+ 418              	.LVL50:
+ 419              	.LFB69:
+  91:Core/Src/helperFunc.c **** 
+  92:Core/Src/helperFunc.c **** 
+  93:Core/Src/helperFunc.c **** void ftoa0(float n, char* res, int afterpoint)
+  94:Core/Src/helperFunc.c **** {
+ 420              		.loc 1 94 1 is_stmt 1 view -0
+ 421              		.cfi_startproc
+ 422              		@ args = 0, pretend = 0, frame = 0
+ 423              		@ frame_needed = 0, uses_anonymous_args = 0
+ 424              		.loc 1 94 1 is_stmt 0 view .LVU107
+ 425 0000 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+ 426              	.LCFI3:
+ 427              		.cfi_def_cfa_offset 32
+ 428              		.cfi_offset 3, -32
+ 429              		.cfi_offset 4, -28
+ 430              		.cfi_offset 5, -24
+ 431              		.cfi_offset 6, -20
+ 432              		.cfi_offset 7, -16
+ 433              		.cfi_offset 8, -12
+ 434              		.cfi_offset 9, -8
+ 435              		.cfi_offset 14, -4
+ 436 0004 0646     		mov	r6, r0
+ 437 0006 0C46     		mov	r4, r1
+ 438 0008 1746     		mov	r7, r2
+  95:Core/Src/helperFunc.c ****     // Extract integer part
+  96:Core/Src/helperFunc.c ****     int ipart = (int)n;
+ 439              		.loc 1 96 5 is_stmt 1 view .LVU108
+ 440              		.loc 1 96 9 is_stmt 0 view .LVU109
+ 441 000a FFF7FEFF 		bl	__aeabi_f2iz
+ 442              	.LVL51:
+ 443              		.loc 1 96 9 view .LVU110
+ 444 000e 0546     		mov	r5, r0
+ 445              	.LVL52:
+  97:Core/Src/helperFunc.c ****     // Extract floating part
+  98:Core/Src/helperFunc.c ****     float fpart = n - (float)ipart;
+ 446              		.loc 1 98 5 is_stmt 1 view .LVU111
+ 447              		.loc 1 98 23 is_stmt 0 view .LVU112
+ 448 0010 FFF7FEFF 		bl	__aeabi_i2f
+ 449              	.LVL53:
+ 450              		.loc 1 98 23 view .LVU113
+ 451 0014 0146     		mov	r1, r0
+ 452              		.loc 1 98 11 view .LVU114
+ 453 0016 3046     		mov	r0, r6
+ 454 0018 FFF7FEFF 		bl	__aeabi_fsub
+ 455              	.LVL54:
+ 456 001c 0646     		mov	r6, r0
+ 457              	.LVL55:
+  99:Core/Src/helperFunc.c ****     // convert integer part to string
+ 100:Core/Src/helperFunc.c ****     int i = intToStr0(ipart, res, 0);
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s 			page 11
+
+
+ 458              		.loc 1 100 5 is_stmt 1 view .LVU115
+ 459              		.loc 1 100 13 is_stmt 0 view .LVU116
+ 460 001e 0022     		movs	r2, #0
+ 461 0020 2146     		mov	r1, r4
+ 462 0022 2846     		mov	r0, r5
+ 463              	.LVL56:
+ 464              		.loc 1 100 13 view .LVU117
+ 465 0024 FFF7FEFF 		bl	intToStr0
+ 466              	.LVL57:
+ 101:Core/Src/helperFunc.c ****     // check for display option after point
+ 102:Core/Src/helperFunc.c ****     if (afterpoint != 0)
+ 467              		.loc 1 102 5 is_stmt 1 view .LVU118
+ 468              		.loc 1 102 8 is_stmt 0 view .LVU119
+ 469 0028 0FB9     		cbnz	r7, .L33
+ 470              	.LVL58:
+ 471              	.L30:
+ 103:Core/Src/helperFunc.c ****     {
+ 104:Core/Src/helperFunc.c ****         res[i] = '.'; // add dot
+ 105:Core/Src/helperFunc.c ****         fpart = fpart * pow(10, afterpoint);
+ 106:Core/Src/helperFunc.c ****         intToStr((int)fpart, res + i + 1, afterpoint);
+ 107:Core/Src/helperFunc.c ****     }
+ 108:Core/Src/helperFunc.c **** }
+ 472              		.loc 1 108 1 view .LVU120
+ 473 002a BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+ 474              	.LVL59:
+ 475              	.L33:
+ 476              		.loc 1 108 1 view .LVU121
+ 477 002e 0546     		mov	r5, r0
+ 478              	.LVL60:
+ 104:Core/Src/helperFunc.c ****         fpart = fpart * pow(10, afterpoint);
+ 479              		.loc 1 104 9 is_stmt 1 view .LVU122
+ 104:Core/Src/helperFunc.c ****         fpart = fpart * pow(10, afterpoint);
+ 480              		.loc 1 104 16 is_stmt 0 view .LVU123
+ 481 0030 2E23     		movs	r3, #46
+ 482 0032 2354     		strb	r3, [r4, r0]
+ 105:Core/Src/helperFunc.c ****         intToStr((int)fpart, res + i + 1, afterpoint);
+ 483              		.loc 1 105 9 is_stmt 1 view .LVU124
+ 105:Core/Src/helperFunc.c ****         intToStr((int)fpart, res + i + 1, afterpoint);
+ 484              		.loc 1 105 25 is_stmt 0 view .LVU125
+ 485 0034 3846     		mov	r0, r7
+ 486              	.LVL61:
+ 105:Core/Src/helperFunc.c ****         intToStr((int)fpart, res + i + 1, afterpoint);
+ 487              		.loc 1 105 25 view .LVU126
+ 488 0036 FFF7FEFF 		bl	__aeabi_i2d
+ 489              	.LVL62:
+ 490 003a 0246     		mov	r2, r0
+ 491 003c 0B46     		mov	r3, r1
+ 492 003e 0020     		movs	r0, #0
+ 493 0040 0B49     		ldr	r1, .L34
+ 494 0042 FFF7FEFF 		bl	pow
+ 495              	.LVL63:
+ 496 0046 8046     		mov	r8, r0
+ 497 0048 8946     		mov	r9, r1
+ 105:Core/Src/helperFunc.c ****         intToStr((int)fpart, res + i + 1, afterpoint);
+ 498              		.loc 1 105 23 view .LVU127
+ 499 004a 3046     		mov	r0, r6
+ 500 004c FFF7FEFF 		bl	__aeabi_f2d
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s 			page 12
+
+
+ 501              	.LVL64:
+ 502 0050 4246     		mov	r2, r8
+ 503 0052 4B46     		mov	r3, r9
+ 504 0054 FFF7FEFF 		bl	__aeabi_dmul
+ 505              	.LVL65:
+ 105:Core/Src/helperFunc.c ****         intToStr((int)fpart, res + i + 1, afterpoint);
+ 506              		.loc 1 105 15 view .LVU128
+ 507 0058 FFF7FEFF 		bl	__aeabi_d2f
+ 508              	.LVL66:
+ 106:Core/Src/helperFunc.c ****     }
+ 509              		.loc 1 106 9 is_stmt 1 view .LVU129
+ 106:Core/Src/helperFunc.c ****     }
+ 510              		.loc 1 106 38 is_stmt 0 view .LVU130
+ 511 005c 691C     		adds	r1, r5, #1
+ 106:Core/Src/helperFunc.c ****     }
+ 512              		.loc 1 106 9 view .LVU131
+ 513 005e 0C44     		add	r4, r4, r1
+ 514              	.LVL67:
+ 106:Core/Src/helperFunc.c ****     }
+ 515              		.loc 1 106 9 view .LVU132
+ 516 0060 FFF7FEFF 		bl	__aeabi_f2iz
+ 517              	.LVL68:
+ 106:Core/Src/helperFunc.c ****     }
+ 518              		.loc 1 106 9 view .LVU133
+ 519 0064 3A46     		mov	r2, r7
+ 520 0066 2146     		mov	r1, r4
+ 521 0068 FFF7FEFF 		bl	intToStr
+ 522              	.LVL69:
+ 523              		.loc 1 108 1 view .LVU134
+ 524 006c DDE7     		b	.L30
+ 525              	.L35:
+ 526 006e 00BF     		.align	2
+ 527              	.L34:
+ 528 0070 00002440 		.word	1076101120
+ 529              		.cfi_endproc
+ 530              	.LFE69:
+ 532              		.section	.text.random_number,"ax",%progbits
+ 533              		.align	1
+ 534              		.global	random_number
+ 535              		.syntax unified
+ 536              		.thumb
+ 537              		.thumb_func
+ 539              	random_number:
+ 540              	.LVL70:
+ 541              	.LFB70:
+ 109:Core/Src/helperFunc.c **** 
+ 110:Core/Src/helperFunc.c **** int random_number(int min_num, int max_num)
+ 111:Core/Src/helperFunc.c **** {
+ 542              		.loc 1 111 1 is_stmt 1 view -0
+ 543              		.cfi_startproc
+ 544              		@ args = 0, pretend = 0, frame = 0
+ 545              		@ frame_needed = 0, uses_anonymous_args = 0
+ 546              		.loc 1 111 1 is_stmt 0 view .LVU136
+ 547 0000 38B5     		push	{r3, r4, r5, lr}
+ 548              	.LCFI4:
+ 549              		.cfi_def_cfa_offset 16
+ 550              		.cfi_offset 3, -16
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s 			page 13
+
+
+ 551              		.cfi_offset 4, -12
+ 552              		.cfi_offset 5, -8
+ 553              		.cfi_offset 14, -4
+ 554 0002 0446     		mov	r4, r0
+ 112:Core/Src/helperFunc.c ****     int result = 0, low_num = 0, hi_num = 0;
+ 555              		.loc 1 112 5 is_stmt 1 view .LVU137
+ 556              	.LVL71:
+ 113:Core/Src/helperFunc.c **** 
+ 114:Core/Src/helperFunc.c ****     if (min_num < max_num)
+ 557              		.loc 1 114 5 view .LVU138
+ 558              		.loc 1 114 8 is_stmt 0 view .LVU139
+ 559 0004 8842     		cmp	r0, r1
+ 560 0006 0DDA     		bge	.L37
+ 115:Core/Src/helperFunc.c ****     {
+ 116:Core/Src/helperFunc.c ****         low_num = min_num;
+ 561              		.loc 1 116 9 is_stmt 1 view .LVU140
+ 562              	.LVL72:
+ 117:Core/Src/helperFunc.c ****         hi_num = max_num + 1; // include max_num in output
+ 563              		.loc 1 117 9 view .LVU141
+ 564              		.loc 1 117 16 is_stmt 0 view .LVU142
+ 565 0008 4D1C     		adds	r5, r1, #1
+ 566              	.LVL73:
+ 567              	.L38:
+ 118:Core/Src/helperFunc.c ****     } else {
+ 119:Core/Src/helperFunc.c ****         low_num = max_num + 1; // include max_num in output
+ 120:Core/Src/helperFunc.c ****         hi_num = min_num;
+ 121:Core/Src/helperFunc.c ****     }
+ 122:Core/Src/helperFunc.c **** 
+ 123:Core/Src/helperFunc.c ****     srand(HAL_GetTick());
+ 568              		.loc 1 123 5 is_stmt 1 view .LVU143
+ 569 000a FFF7FEFF 		bl	HAL_GetTick
+ 570              	.LVL74:
+ 571              		.loc 1 123 5 is_stmt 0 view .LVU144
+ 572 000e FFF7FEFF 		bl	srand
+ 573              	.LVL75:
+ 124:Core/Src/helperFunc.c ****     result = (rand() % (hi_num - low_num)) + low_num;
+ 574              		.loc 1 124 5 is_stmt 1 view .LVU145
+ 575              		.loc 1 124 15 is_stmt 0 view .LVU146
+ 576 0012 FFF7FEFF 		bl	rand
+ 577              	.LVL76:
+ 578              		.loc 1 124 32 view .LVU147
+ 579 0016 2B1B     		subs	r3, r5, r4
+ 580              		.loc 1 124 22 view .LVU148
+ 581 0018 90FBF3F2 		sdiv	r2, r0, r3
+ 582 001c 03FB1200 		mls	r0, r3, r2, r0
+ 583              	.LVL77:
+ 125:Core/Src/helperFunc.c ****     return result;
+ 584              		.loc 1 125 5 is_stmt 1 view .LVU149
+ 126:Core/Src/helperFunc.c **** }
+ 585              		.loc 1 126 1 is_stmt 0 view .LVU150
+ 586 0020 2044     		add	r0, r0, r4
+ 587              	.LVL78:
+ 588              		.loc 1 126 1 view .LVU151
+ 589 0022 38BD     		pop	{r3, r4, r5, pc}
+ 590              	.LVL79:
+ 591              	.L37:
+ 119:Core/Src/helperFunc.c ****         hi_num = min_num;
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s 			page 14
+
+
+ 592              		.loc 1 119 9 is_stmt 1 view .LVU152
+ 120:Core/Src/helperFunc.c ****     }
+ 593              		.loc 1 120 9 view .LVU153
+ 120:Core/Src/helperFunc.c ****     }
+ 594              		.loc 1 120 16 is_stmt 0 view .LVU154
+ 595 0024 0546     		mov	r5, r0
+ 119:Core/Src/helperFunc.c ****         hi_num = min_num;
+ 596              		.loc 1 119 17 view .LVU155
+ 597 0026 4C1C     		adds	r4, r1, #1
+ 598              	.LVL80:
+ 119:Core/Src/helperFunc.c ****         hi_num = min_num;
+ 599              		.loc 1 119 17 view .LVU156
+ 600 0028 EFE7     		b	.L38
+ 601              		.cfi_endproc
+ 602              	.LFE70:
+ 604              		.text
+ 605              	.Letext0:
+ 606              		.file 2 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h"
+ 607              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s 			page 15
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 helperFunc.c
+C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s:18     .text.reverse:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s:24     .text.reverse:00000000 reverse
+C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s:74     .text.intToStr:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s:80     .text.intToStr:00000000 intToStr
+C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s:173    .text.intToStr:00000050 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s:185    .text.ftoa:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s:191    .text.ftoa:00000000 ftoa
+C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s:302    .text.ftoa:00000070 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s:307    .text.intToStr0:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s:313    .text.intToStr0:00000000 intToStr0
+C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s:406    .text.intToStr0:00000050 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s:411    .text.ftoa0:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s:417    .text.ftoa0:00000000 ftoa0
+C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s:528    .text.ftoa0:00000070 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s:533    .text.random_number:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\ccns2lla.s:539    .text.random_number:00000000 random_number
+
+UNDEFINED SYMBOLS
+__aeabi_f2iz
+__aeabi_i2f
+__aeabi_fsub
+__aeabi_i2d
+__aeabi_f2d
+__aeabi_dmul
+__aeabi_d2f
+pow
+HAL_GetTick
+srand
+rand
