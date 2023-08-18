@@ -149,7 +149,7 @@ int main(void)
 
             uint8_t spo2 = max30102_getSpO2();
             uint8_t heartReat = max30102_getHeartRate();
-            // 显示心率
+            // 
             if (heartReat % 1000 / 100 > 0)
                 OLED_showNum(0, heartReat % 1000 / 100);
             else
@@ -157,14 +157,14 @@ int main(void)
             OLED_showNum(1, heartReat % 100 / 10);
             OLED_showNum(2, heartReat % 10);
             logPC("HR: %3d\n", heartReat);
-            // 显示血氧
+            // 
             if (spo2 % 1000 / 100 > 0)
                 OLED_showNum(3, spo2 % 1000 / 100);
             else
                 OLED_showNum(3, 10);
             OLED_showNum(4, spo2 % 100 / 10);
             OLED_showNum(5, spo2 % 10);
-            // 画图表
+            // 
             int16_t diff = max30102_getDiff();
             OLED_drawChart(diff);
             if (diff > 50)

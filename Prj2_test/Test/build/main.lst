@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
+ARM GAS  C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s 			page 1
 
 
    1              		.cpu cortex-m3
@@ -17,14 +17,14 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
   14              		.text
   15              	.Ltext0:
   16              		.cfi_sections	.debug_frame
-  17              		.section	.text.MX_NVIC_Init,"ax",%progbits
-  18              		.align	1
-  19              		.syntax unified
-  20              		.thumb
-  21              		.thumb_func
-  23              	MX_NVIC_Init:
-  24              	.LFB68:
-  25              		.file 1 "Core/Src/main.c"
+  17              		.file 1 "Core/Src/main.c"
+  18              		.section	.text.MX_NVIC_Init,"ax",%progbits
+  19              		.align	1
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	MX_NVIC_Init:
+  25              	.LFB68:
    1:Core/Src/main.c **** /* USER CODE BEGIN Header */
    2:Core/Src/main.c **** /**
    3:Core/Src/main.c ****   ******************************************************************************
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
   31:Core/Src/main.c **** /* USER CODE END Includes */
   32:Core/Src/main.c **** 
   33:Core/Src/main.c **** /* Private typedef -----------------------------------------------------------*/
-ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 2
+ARM GAS  C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s 			page 2
 
 
   34:Core/Src/main.c **** /* USER CODE BEGIN PTD */
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
   88:Core/Src/main.c ****   /* USER CODE BEGIN Init */
   89:Core/Src/main.c **** 
   90:Core/Src/main.c ****   /* USER CODE END Init */
-ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 3
+ARM GAS  C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s 			page 3
 
 
   91:Core/Src/main.c **** 
@@ -178,14 +178,14 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
  145:Core/Src/main.c ****     if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_12) == GPIO_PIN_RESET)
  146:Core/Src/main.c ****         {
  147:Core/Src/main.c ****             HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
-ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 4
+ARM GAS  C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s 			page 4
 
 
  148:Core/Src/main.c ****             max30102_cal();
  149:Core/Src/main.c **** 
  150:Core/Src/main.c ****             uint8_t spo2 = max30102_getSpO2();
  151:Core/Src/main.c ****             uint8_t heartReat = max30102_getHeartRate();
- 152:Core/Src/main.c ****             // 显示心率
+ 152:Core/Src/main.c ****             // 
  153:Core/Src/main.c ****             if (heartReat % 1000 / 100 > 0)
  154:Core/Src/main.c ****                 OLED_showNum(0, heartReat % 1000 / 100);
  155:Core/Src/main.c ****             else
@@ -193,14 +193,14 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
  157:Core/Src/main.c ****             OLED_showNum(1, heartReat % 100 / 10);
  158:Core/Src/main.c ****             OLED_showNum(2, heartReat % 10);
  159:Core/Src/main.c ****             logPC("HR: %3d\n", heartReat);
- 160:Core/Src/main.c ****             // 显示血氧
+ 160:Core/Src/main.c ****             // 
  161:Core/Src/main.c ****             if (spo2 % 1000 / 100 > 0)
  162:Core/Src/main.c ****                 OLED_showNum(3, spo2 % 1000 / 100);
  163:Core/Src/main.c ****             else
  164:Core/Src/main.c ****                 OLED_showNum(3, 10);
  165:Core/Src/main.c ****             OLED_showNum(4, spo2 % 100 / 10);
  166:Core/Src/main.c ****             OLED_showNum(5, spo2 % 10);
- 167:Core/Src/main.c ****             // 画图表
+ 167:Core/Src/main.c ****             // 
  168:Core/Src/main.c ****             int16_t diff = max30102_getDiff();
  169:Core/Src/main.c ****             OLED_drawChart(diff);
  170:Core/Src/main.c ****             if (diff > 50)
@@ -238,7 +238,7 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
  202:Core/Src/main.c ****     Error_Handler();
  203:Core/Src/main.c ****   }
  204:Core/Src/main.c **** 
-ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 5
+ARM GAS  C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s 			page 5
 
 
  205:Core/Src/main.c ****   /** Initializes the CPU, AHB and APB buses clocks
@@ -298,7 +298,7 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
   53 001e FFF7FEFF 		bl	HAL_NVIC_EnableIRQ
   54              	.LVL3:
  232:Core/Src/main.c **** }
-ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 6
+ARM GAS  C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s 			page 6
 
 
   55              		.loc 1 232 1 is_stmt 0 view .LVU5
@@ -358,7 +358,7 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
  103              	.LFE65:
  105              		.section	.text.Error_Handler,"ax",%progbits
  106              		.align	1
-ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 7
+ARM GAS  C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s 			page 7
 
 
  107              		.global	Error_Handler
@@ -418,7 +418,7 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
   25:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __CMSIS_GCC_H
   26:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __CMSIS_GCC_H
   27:Drivers/CMSIS/Include/cmsis_gcc.h **** 
-ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 8
+ARM GAS  C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s 			page 8
 
 
   28:Drivers/CMSIS/Include/cmsis_gcc.h **** /* ignore some GCC warnings */
@@ -478,7 +478,7 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
   82:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_WRITE { uint16_t v; };
   83:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
   84:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_WRITE(addr, val)    (void)((((struct T_UINT16_WRITE *)(void *)(addr))-
-ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 9
+ARM GAS  C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s 			page 9
 
 
   85:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
@@ -538,7 +538,7 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
  139:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
  140:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __disable_irq(void)
  124              		.loc 2 140 27 view .LVU16
-ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 10
+ARM GAS  C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s 			page 10
 
 
  125              	.LBB5:
@@ -598,7 +598,7 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
  188:Core/Src/main.c **** 
  171              		.loc 1 188 22 is_stmt 0 view .LVU25
  172 000e 0023     		movs	r3, #0
-ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 11
+ARM GAS  C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s 			page 11
 
 
  173 0010 0193     		str	r3, [sp, #4]
@@ -658,7 +658,7 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
  209              		.loc 1 207 31 is_stmt 0 view .LVU43
  210 003a 0F23     		movs	r3, #15
  211 003c 0193     		str	r3, [sp, #4]
-ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 12
+ARM GAS  C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s 			page 12
 
 
  209:Core/Src/main.c ****   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
@@ -718,7 +718,7 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
  252              	.LFE67:
  254              		.section	.rodata.main.str1.4,"aMS",%progbits,1
  255              		.align	2
-ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 13
+ARM GAS  C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s 			page 13
 
 
  256              	.LC0:
@@ -778,7 +778,7 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
  300              		.loc 1 109 3 view .LVU66
  301 001e FFF7FEFF 		bl	Debug_Init
  302              	.LVL20:
-ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 14
+ARM GAS  C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s 			page 14
 
 
  111:Core/Src/main.c ****     OLED_Init();
@@ -830,15 +830,15 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
  342 005c 0420     		movs	r0, #4
  343 005e FFF7FEFF 		bl	OLED_showNum
  344              	.LVL28:
- 166:Core/Src/main.c ****             // 画图表
+ 166:Core/Src/main.c ****             // 
  345              		.loc 1 166 13 view .LVU74
- 346 0062 A5FB0431 		umull	r3, r1, r5, r4
- 347 0066 C908     		lsrs	r1, r1, #3
- 348 0068 01EB8101 		add	r1, r1, r1, lsl #2
- 349 006c A4EB4101 		sub	r1, r4, r1, lsl #1
+ 346 0062 A5FB0435 		umull	r3, r5, r5, r4
+ 347 0066 ED08     		lsrs	r5, r5, #3
+ 348 0068 05EB8505 		add	r5, r5, r5, lsl #2
+ 349 006c A4EB4501 		sub	r1, r4, r5, lsl #1
  350 0070 C9B2     		uxtb	r1, r1
  351 0072 0520     		movs	r0, #5
-ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 15
+ARM GAS  C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s 			page 15
 
 
  352 0074 FFF7FEFF 		bl	OLED_showNum
@@ -898,7 +898,7 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
  393              		.loc 1 148 13 view .LVU87
  394 00ae FFF7FEFF 		bl	max30102_cal
  395              	.LVL37:
-ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 16
+ARM GAS  C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s 			page 16
 
 
  150:Core/Src/main.c ****             uint8_t heartReat = max30102_getHeartRate();
@@ -909,9 +909,9 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
  399              	.LVL38:
  400 00b6 0446     		mov	r4, r0
  401              	.LVL39:
- 151:Core/Src/main.c ****             // 显示心率
+ 151:Core/Src/main.c ****             // 
  402              		.loc 1 151 13 is_stmt 1 view .LVU90
- 151:Core/Src/main.c ****             // 显示心率
+ 151:Core/Src/main.c ****             // 
  403              		.loc 1 151 33 is_stmt 0 view .LVU91
  404 00b8 FFF7FEFF 		bl	max30102_getHeartRate
  405              	.LVL40:
@@ -935,10 +935,10 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
  419              		.loc 1 154 17 is_stmt 1 view .LVU95
  154:Core/Src/main.c ****             else
  420              		.loc 1 154 50 is_stmt 0 view .LVU96
- 421 00d6 2249     		ldr	r1, .L27
- 422 00d8 81FB0321 		smull	r2, r1, r1, r3
+ 421 00d6 224A     		ldr	r2, .L27
+ 422 00d8 82FB0312 		smull	r1, r2, r2, r3
  423 00dc DB17     		asrs	r3, r3, #31
- 424 00de C3EB6111 		rsb	r1, r3, r1, asr #5
+ 424 00de C3EB6211 		rsb	r1, r3, r2, asr #5
  154:Core/Src/main.c ****             else
  425              		.loc 1 154 17 view .LVU97
  426 00e2 C9B2     		uxtb	r1, r1
@@ -958,7 +958,7 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
  438 00f4 03FB1161 		mls	r1, r3, r1, r6
  439 00f8 C9B2     		uxtb	r1, r1
  440 00fa 1A4D     		ldr	r5, .L27+4
-ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 17
+ARM GAS  C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s 			page 17
 
 
  441 00fc A5FB0131 		umull	r3, r1, r5, r1
@@ -976,7 +976,7 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
  452 0118 0220     		movs	r0, #2
  453 011a FFF7FEFF 		bl	OLED_showNum
  454              	.LVL45:
- 159:Core/Src/main.c ****             // 显示血氧
+ 159:Core/Src/main.c ****             // 
  455              		.loc 1 159 13 view .LVU101
  456 011e 3146     		mov	r1, r6
  457 0120 1348     		ldr	r0, .L27+16
@@ -1000,10 +1000,10 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
  471              		.loc 1 162 17 is_stmt 1 view .LVU105
  162:Core/Src/main.c ****             else
  472              		.loc 1 162 45 is_stmt 0 view .LVU106
- 473 0140 0749     		ldr	r1, .L27
- 474 0142 81FB0321 		smull	r2, r1, r1, r3
+ 473 0140 074A     		ldr	r2, .L27
+ 474 0142 82FB0312 		smull	r1, r2, r2, r3
  475 0146 DB17     		asrs	r3, r3, #31
- 476 0148 C3EB6111 		rsb	r1, r3, r1, asr #5
+ 476 0148 C3EB6211 		rsb	r1, r3, r2, asr #5
  162:Core/Src/main.c ****             else
  477              		.loc 1 162 17 view .LVU107
  478 014c C9B2     		uxtb	r1, r1
@@ -1018,7 +1018,7 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
  486 0156 0120     		movs	r0, #1
  487 0158 FFF7FEFF 		bl	OLED_showHeart
  488              	.LVL49:
-ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 18
+ARM GAS  C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s 			page 18
 
 
  489 015c 98E7     		b	.L19
@@ -1035,9 +1035,9 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
  500              	.LFE66:
  502              		.text
  503              	.Letext0:
- 504              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
- 505              		.file 4 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
- 506              		.file 5 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h"
+ 504              		.file 3 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h"
+ 505              		.file 4 "e:\\tools_stm\\arm-gnu-toolchain-12.3.rel1-mingw-w64-i686-arm-none-eabi\\arm-gnu-toolchai
+ 506              		.file 5 "e:\\tools_stm\\arm-gnu-toolchain-12.3.rel1-mingw-w64-i686-arm-none-eabi\\arm-gnu-toolchai
  507              		.file 6 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
  508              		.file 7 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h"
  509              		.file 8 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc_ex.h"
@@ -1049,28 +1049,28 @@ ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 1
  515              		.file 14 "Core/Inc/max30102.h"
  516              		.file 15 "Core/Inc/debug.h"
  517              		.file 16 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h"
- 518              		.file 17 "Core/Inc/gpio.h"
+ 518              		.file 17 "Core/Inc/i2c.h"
  519              		.file 18 "Core/Inc/usart.h"
- 520              		.file 19 "Core/Inc/i2c.h"
+ 520              		.file 19 "Core/Inc/gpio.h"
  521              		.file 20 "<built-in>"
-ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s 			page 19
+ARM GAS  C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s 			page 19
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s:18     .text.MX_NVIC_Init:00000000 $t
-C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s:23     .text.MX_NVIC_Init:00000000 MX_NVIC_Init
-C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s:61     .text.HAL_UART_RxCpltCallback:00000000 $t
-C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s:67     .text.HAL_UART_RxCpltCallback:00000000 HAL_UART_RxCpltCallback
-C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s:101    .text.HAL_UART_RxCpltCallback:00000014 $d
-C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s:106    .text.Error_Handler:00000000 $t
-C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s:112    .text.Error_Handler:00000000 Error_Handler
-C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s:144    .text.SystemClock_Config:00000000 $t
-C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s:150    .text.SystemClock_Config:00000000 SystemClock_Config
-C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s:255    .rodata.main.str1.4:00000000 $d
-C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s:260    .text.main:00000000 $t
-C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s:266    .text.main:00000000 main
-C:\Users\ADMINI~1\AppData\Local\Temp\cc1W5cCT.s:493    .text.main:00000160 $d
+C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s:19     .text.MX_NVIC_Init:00000000 $t
+C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s:24     .text.MX_NVIC_Init:00000000 MX_NVIC_Init
+C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s:61     .text.HAL_UART_RxCpltCallback:00000000 $t
+C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s:67     .text.HAL_UART_RxCpltCallback:00000000 HAL_UART_RxCpltCallback
+C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s:101    .text.HAL_UART_RxCpltCallback:00000014 $d
+C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s:106    .text.Error_Handler:00000000 $t
+C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s:112    .text.Error_Handler:00000000 Error_Handler
+C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s:144    .text.SystemClock_Config:00000000 $t
+C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s:150    .text.SystemClock_Config:00000000 SystemClock_Config
+C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s:255    .rodata.main.str1.4:00000000 $d
+C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s:260    .text.main:00000000 $t
+C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s:266    .text.main:00000000 main
+C:\Users\Truong\AppData\Local\Temp\ccIxcaeY.s:493    .text.main:00000160 $d
 
 UNDEFINED SYMBOLS
 HAL_NVIC_SetPriority
